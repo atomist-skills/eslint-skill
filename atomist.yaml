@@ -1,0 +1,87 @@
+#
+#  Copyright © 2020 Atomist, Inc.
+#
+#  Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+#
+
+skill:
+  name: atomist/eslint-skill
+  title: ESLint
+  version: 1.0.0
+  author: Atomist
+  description: |-
+    Automatically find and fix problems in your JavaScript code using ESLint
+  documentation: |-
+    # Find Problems
+    ESLint statically analyzes your code to quickly find problems. ESLint is built into most text editors and you
+    can run ESLint as part of your continuous integration pipeline.
+
+    # Fix Automatically
+    Many problems ESLint finds can be automatically fixed. ESLint fixes are syntax-aware so you won't experience
+    errors introduced by traditional find-and-replace algorithms.
+  category:
+    - code_review
+    - code_quality
+  technologies:
+    - javascript
+  license: Apache-2.0
+  homepage: https://github.com/atomist-skills/eslint-skill
+  repository: https://github.com/atomist-skills/eslint-skill.git
+  icon: data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIiA/Pgo8c3ZnIHdpZHRoPSIyNTZweCIgaGVpZ2h0PSIyNjNweCIgdmlld0JveD0iMCAwIDI1NiAyNjMiIHZlcnNpb249IjEuMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgcHJlc2VydmVBc3BlY3RSYXRpbz0ieE1pZFlNaWQiPgogICAgPGc+CiAgICAgICAgPHBhdGggZD0iTTEwMC4wMzM3ODUsMjYyLjEwNTkyMyBMMC41OTgzNTMyNTQsMTcyLjU3MDUxOCBMMjguNDQ4OTc3NCw0MS42OTQzNDI2IEwxNTUuNjI2MjQyLDAuMzUzNTcyMzc3IEwyNTUuMDYxNjczLDg5Ljg4ODk3NzQgTDIyNy4yMTEwNDksMjIwLjc2NTE1MyBMMTAwLjAzMzc4NSwyNjIuMTA1OTIzIEwxMDAuMDMzNzg1LDI2Mi4xMDU5MjMgWiBNNTEuOTQ3OTQxNiwxNTUuOTI1NDE4IEwxMTEuMjM5MzA5LDIwOS4yMzMyNTQgTDE4Ny4wNjY5ODUsMTg0LjUzNzU4MyBMMjAzLjcxMjA4NSwxMDYuNTM0MDc3IEwxNDQuNDIwNzE3LDUzLjExNzQ1MDIgTDY4LjU5MzA0MTIsNzcuOTIxOTEyNCBMNTEuOTQ3OTQxNiwxNTUuOTI1NDE4IEw1MS45NDc5NDE2LDE1NS45MjU0MTggWiIgZmlsbD0iIzNBMzNEMSI+PC9wYXRoPgogICAgICAgIDxwYXRoIGQ9Ik0xODEuMzAxMDM2LDIyMy45MjAxMDYgTDc0LjM1ODk5MDcsMjIzLjkyMDEwNiBMMjAuODMzNTcyNCwxMzEuMjI5NzQ4IEw3NC4zNTg5OTA3LDM4LjUzOTM4OTEgTDE4MS4zMDEwMzYsMzguNTM5Mzg5MSBMMjM0LjgyNjQ1NCwxMzEuMjI5NzQ4IEwxODEuMzAxMDM2LDIyMy45MjAxMDYgTDE4MS4zMDEwMzYsMjIzLjkyMDEwNiBaIE05My4xNzk5MjAzLDE5MS4yODI2NTYgTDE2Mi40ODAxMDYsMTkxLjI4MjY1NiBMMTk3LjE4NDU5NSwxMzEuMjI5NzQ4IEwxNjIuNDgwMTA2LDcxLjE3NjgzOTMgTDkzLjE3OTkyMDMsNzEuMTc2ODM5MyBMNTguNTg0MjIzMSwxMzEuMjI5NzQ4IEw5My4xNzk5MjAzLDE5MS4yODI2NTYgTDkzLjE3OTkyMDMsMTkxLjI4MjY1NiBaIiBmaWxsPSIjNjQ2NEUyIj48L3BhdGg+CiAgICA8L2c+Cjwvc3ZnPgo=
+
+  package:
+    use: atomist/package-npm-skill
+
+  runtime:
+    memory: 1024
+    timeout: 540
+    name: nodejs10
+    entry_point: entryPoint
+
+parameters:
+  - boolean:
+      name: fix
+      display_name: Fix Problems
+      description: Run ESLint with --fix option
+      required: false
+  - string_array:
+      name: ext
+      display_name: Extensions
+      description: File extensions to lint (defaults to .js)
+      required: false
+  - string:
+      name: config
+      display_name: Configuration
+      description: ESLint configuration in JSON format
+      line_style: multiple
+      required: false
+  - string_array:
+      name: ignores
+      display_name: Ignore Pattern
+      description: Pattern of files and folders to ignore during linting
+      required: false
+  - string_array:
+      name: env
+      display_name: Environments
+      description: Configure ESLint environments
+      reqiured: false
+  - string_array:
+      name: global
+      display_name: Global Variable
+      description: Define global variables
+      required: false
+  - repo_filter:
+      name: repos
+      display_name: Which repositories
+      description: ''
+      required: false

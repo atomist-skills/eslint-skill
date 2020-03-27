@@ -1,0 +1,19 @@
+subscription lintOnPush {
+    Push {
+        after {
+            url
+            sha
+        }
+        branch
+        repo {
+            url
+            owner
+            name
+            org {
+                provider {
+                    apiUrl
+                }
+            }
+        }
+    }
+}
