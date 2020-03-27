@@ -93,9 +93,9 @@ const NpmInstallStep: LintStep = {
     name: "npm install",
     run: async (ctx, params) => {
         if (await params.project.hasFile("package-lock.json")) {
-            await params.project.spawn("npm", ["ci"]);
+            await params.project.spawn("npm", ["ci"], { env: { ...process.env, NODE_ENV: "development" } });
         } else {
-            await params.project.spawn("npm", ["install"]);
+            await params.project.spawn("npm", ["install"], { env: { ...process.env, NODE_ENV: "development" } });
         }
         return {
             code: 0,
@@ -237,10 +237,10 @@ const RunEslintStep: LintStep = {
                 code: 1,
                 visibility: "hidden",
                 reason: `Unknown ESLint exit code`,
-            }
+            };
         }
     },
-}
+};
 
 export const handler: EventHandler<LintOnPushSubscription, LintConfiguration> = async ctx => {
     return runSteps({
@@ -251,6 +251,6 @@ export const handler: EventHandler<LintOnPushSubscription, LintConfiguration> = 
             NpmInstallStep,
             ValidateRepositoryStep,
             RunEslintStep,
-        ]
-    })
+        ],
+    });
 };
