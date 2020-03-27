@@ -34,7 +34,6 @@ import {
 } from "@atomist/skill/lib/steps";
 import * as fs from "fs-extra";
 import * as _ from "lodash";
-import * as os from "os";
 import * as path from "path";
 import {
     DefaultLintConfiguration,
