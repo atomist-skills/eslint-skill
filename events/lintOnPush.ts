@@ -134,10 +134,9 @@ const RunEslintStep: LintStep = {
         };
         const cmd = path.join(params.project.baseDir, "node_modules", ".bin", "eslint");
         const args: string[] = [];
-        const tmp = os.tmpdir();
-        const reportFile = path.join(tmp, `eslintreport-${push.after.sha.slice(0, 7)}.json`);
-        const configFile = path.join(tmp, `eslintrc-${push.after.sha.slice(0, 7)}.json`);
-        const ignoreFile = path.join(tmp, `eslintignore-${push.after.sha.slice(0, 7)}.json`);
+        const reportFile = path.join(params.project.baseDir, `eslintreport-${push.after.sha.slice(0, 7)}.json`);
+        const configFile = path.join(params.project.baseDir, `eslintrc-${push.after.sha.slice(0, 7)}.json`);
+        const ignoreFile = path.join(params.project.baseDir, `eslintignore-${push.after.sha.slice(0, 7)}.json`);
 
         cfg.env?.forEach(e => args.push("--env", e));
         cfg.ext?.forEach(e => args.push("--ext", e));
@@ -166,20 +165,22 @@ const RunEslintStep: LintStep = {
         const lines = [];
         const result = await params.project.spawn(cmd, args, { log: { write: msg => lines.push(msg) } });
         const violations: Array<{ message: string, path: string, startLine: number, startColumn: number, endLine: number, endColumn: number, severity: number }> = [];
-        const report = await fs.readJson(reportFile);
-        report?.filter(r => r.messages.length > 0).forEach(r => {
-            r.messages.forEach(m => {
-                violations.push({
-                    path: r.filePath.replace(prefix, ""),
-                    message: m.message,
-                    startLine: m.line,
-                    startColumn: m.column,
-                    endLine: m.endLine,
-                    endColumn: m.endColumn,
-                    severity: m.severity,
+        if (await fs.pathExists(reportFile)) {
+            const report = await fs.readJson(reportFile);
+            report?.filter(r => r.messages.length > 0).forEach(r => {
+                r.messages.forEach(m => {
+                    violations.push({
+                        path: r.filePath.replace(prefix, ""),
+                        message: m.message,
+                        startLine: m.line,
+                        startColumn: m.column,
+                        endLine: m.endLine,
+                        endColumn: m.endColumn,
+                        severity: m.severity,
+                    });
                 });
             });
-        });
+        }
 
         if (result.status === 0 && violations.length === 0) {
             await ctx.audit.log(`ESLint returned no errors or warnings`);
