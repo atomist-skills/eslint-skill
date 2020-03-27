@@ -74,7 +74,7 @@ parameters:
       name: env
       display_name: Environments
       description: Configure ESLint environments
-      reqiured: false
+      required: false
   - string_array:
       name: global
       display_name: Global Variable
