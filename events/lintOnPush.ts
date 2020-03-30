@@ -190,6 +190,7 @@ const RunEslintStep: LintStep = {
             await fs.remove(file);
         }
 
+        const api = gitHub(params.credential.token, repo.org.provider.apiUrl);
         if (result.status === 0 && violations.length === 0) {
             await ctx.audit.log(`ESLint returned no errors or warnings`);
             /* eslint-disable @typescript-eslint/camelcase */
@@ -215,7 +216,6 @@ const RunEslintStep: LintStep = {
                 reason: `ESLint returned no errors or warnings on [${repo.owner}/${repo.name}](${repo.url})`,
             };
         } else if (result.status === 1 || violations.length > 0) {
-            const api = gitHub(params.credential.token, repo.org.provider.apiUrl);
             /* eslint-disable @typescript-eslint/camelcase */
             const check = (await api.checks.create({
                 owner: repo.owner,
