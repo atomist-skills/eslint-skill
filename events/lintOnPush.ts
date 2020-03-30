@@ -260,7 +260,7 @@ const PushStep: LintStep = {
         const pushCfg = ctx.configuration[0]?.parameters?.push;
         const push = ctx.data.Push[0];
         const repo = push.repo;
-        const commitMsg = `Autofix: ESLint\n[atomist-skill:atomist/eslint-skill]\n[atomist:generated]`;
+        const commitMsg = `Autofix: ESLint\n\n[atomist:generated]\n[atomist-skill:atomist/eslint-skill]`;
 
         if (pushCfg === "pr") {
             await params.project.createBranch(`eslint-${push.branch}`);
