@@ -231,7 +231,7 @@ const RunEslintStep: LintStep = {
             }
             return {
                 code: 0,
-                reason: `ESLint returned errors or warnings on [${repo.owner}/${repo.name}](${repo.url})`,
+                reason: `ESLint raised [errors or warnings](${check.html_url}) on [${repo.owner}/${repo.name}](${repo.url})`,
             };
         } else if (result.status === 2) {
             await ctx.audit.log(`Running ESLint failed with configuration or internal error:`, Severity.ERROR);
