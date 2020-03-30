@@ -54,6 +54,18 @@ parameters:
       display_name: Fix Problems
       description: Run ESLint with --fix option
       required: false
+  - single_choice:
+      name: push
+      display_name: Push Changes back to Repository
+      description: Control if ESLint fixes should be committed back into repository
+      options:
+        - text: Commit to default branch only
+          value: commit_default
+        - text: Commit to branch
+          value: commit
+        - text: Raise Pull Request
+          value: pr
+      required: false
   - string_array:
       name: ext
       display_name: Extensions

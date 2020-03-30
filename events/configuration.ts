@@ -21,6 +21,7 @@ export interface LintConfiguration {
     env?: string[];
     global?: string[];
     fix?: boolean;
+    push?: "commit_default" | "commit" | "pr";
 }
 
 export const DefaultLintConfiguration: LintConfiguration = {

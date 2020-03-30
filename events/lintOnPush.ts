@@ -136,6 +136,7 @@ const RunEslintStep: LintStep = {
         const reportFile = path.join(params.project.baseDir, `eslintreport-${push.after.sha.slice(0, 7)}.json`);
         const configFile = path.join(params.project.baseDir, `eslintrc-${push.after.sha.slice(0, 7)}.json`);
         const ignoreFile = path.join(params.project.baseDir, `eslintignore-${push.after.sha.slice(0, 7)}.json`);
+        const filesToDelete = [reportFile];
 
         cfg.env?.forEach(e => args.push("--env", e));
         cfg.ext?.forEach(e => args.push("--ext", e));
@@ -146,11 +147,13 @@ const RunEslintStep: LintStep = {
         // Add .eslintignore if missing
         if (!(await params.project.hasFile(".eslintignore")) && !!cfg.ignores) {
             await fs.writeFile(ignoreFile, cfg.ignores.join("\n"));
+            filesToDelete.push(ignoreFile);
             args.push("--ignore-path", ignoreFile);
         }
         // Add .eslintrc.json if missing
         if (!(await params.project.hasFile(".eslintrc.json")) && !!cfg.config) {
             await fs.writeFile(configFile, cfg.config);
+            filesToDelete.push(configFile);
             args.push("--config", configFile);
         }
 
@@ -163,6 +166,11 @@ const RunEslintStep: LintStep = {
 
         const lines = [];
         const result = await params.project.spawn(cmd, args, { log: { write: msg => lines.push(msg) } });
+
+        for (const file of filesToDelete) {
+            await fs.remove(file);
+        }
+
         const violations: Array<{ message: string, path: string, startLine: number, startColumn: number, endLine: number, endColumn: number, severity: number }> = [];
         if (await fs.pathExists(reportFile)) {
             const report = await fs.readJson(reportFile);
@@ -242,6 +250,51 @@ const RunEslintStep: LintStep = {
     },
 };
 
+const PushStep: LintStep = {
+    name: "push",
+    runWhen: async (ctx, params) => {
+        const pushCfg = ctx.configuration[0]?.parameters?.push;
+        return !!pushCfg && !(await params.project.gitStatus()).isClean;
+    },
+    run: async (ctx, params) => {
+        const pushCfg = ctx.configuration[0]?.parameters?.push;
+        const push = ctx.data.Push[0];
+        const repo = push.repo;
+        const commitMsg = `Autofix: ESLint\n[atomist-skill:atomist/eslint-skill]\n[atomist:generated]`;
+
+        if (pushCfg === "pr") {
+            await params.project.createBranch(`eslint-${push.branch}`);
+            await params.project.commit(commitMsg);
+            await params.project.push({ force: true });
+
+            try {
+                const pr = (await gitHub(params.credential.token, repo.org.provider.apiUrl).pulls.create({
+                    owner: repo.owner,
+                    repo: repo.name,
+                    title: "Autofix: ESLint",
+                    body: commitMsg,
+                    base: push.branch,
+                    head: `eslint-${push.branch}`,
+                })).data;
+                return {
+                    code: 0,
+                    reason: `Pushed ESLint fix to [${repo.owner}/${repo.name}](${repo.url}) and raised PR [#${pr.number}](${pr.html_url})`,
+                };
+            } catch (e) {
+                // This might fail if the PR already exists
+            }
+
+        } else if (pushCfg === "commit" || (push.branch === push.repo.defaultBranch && pushCfg === "commit_default")) {
+            await params.project.commit(commitMsg);
+            await params.project.push();
+        }
+        return {
+            code: 0,
+            reason: `Pushed ESLint fix to [${repo.owner}/${repo.name}](${repo.url})`,
+        };
+    },
+};
+
 export const handler: EventHandler<LintOnPushSubscription, LintConfiguration> = async ctx => {
     return runSteps({
         context: ctx,
@@ -251,6 +304,7 @@ export const handler: EventHandler<LintOnPushSubscription, LintConfiguration> = 
             NpmInstallStep,
             ValidateRepositoryStep,
             RunEslintStep,
+            PushStep,
         ],
     });
 };

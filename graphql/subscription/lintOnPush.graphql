@@ -3,9 +3,13 @@ subscription lintOnPush {
         after {
             url
             sha
+            author {
+                login
+            }
         }
         branch
         repo {
+            defaultBranch
             url
             owner
             name
