@@ -208,7 +208,7 @@ const RunEslintStep: LintStep = {
                     summary: `Running ESLint resulted in no warnings or errors.
 
 \`$ eslint ${args.join(" ")}\``,
-                }
+                },
             });
             return {
                 code: 0,
