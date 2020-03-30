@@ -167,7 +167,7 @@ const RunEslintStep: LintStep = {
         const lines = [];
         const result = await params.project.spawn(cmd, args, { log: { write: msg => lines.push(msg) } });
 
-        const violations: Array<{ message: string, path: string, startLine: number, startColumn: number, endLine: number, endColumn: number, severity: number }> = [];
+        const violations: Array<{ message: string; path: string; startLine: number; startColumn: number; endLine: number; endColumn: number; severity: number }> = [];
         if (await fs.pathExists(reportFile)) {
             const report = await fs.readJson(reportFile);
             report?.filter(r => r.messages.length > 0).forEach(r => {
