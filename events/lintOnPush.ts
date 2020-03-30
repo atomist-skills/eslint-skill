@@ -192,6 +192,24 @@ const RunEslintStep: LintStep = {
 
         if (result.status === 0 && violations.length === 0) {
             await ctx.audit.log(`ESLint returned no errors or warnings`);
+            /* eslint-disable @typescript-eslint/camelcase */
+            await api.checks.create({
+                owner: repo.owner,
+                repo: repo.name,
+                head_sha: push.after.sha,
+                conclusion: "success",
+                status: "completed",
+                name: "eslint-skill",
+                external_id: ctx.correlationId,
+                started_at: params.start,
+                completed_at: new Date().toISOString(),
+                output: {
+                    title: "ESLint warnings and errors",
+                    summary: `Running ESLint resulted in no warnings or errors.
+
+\`$ eslint ${args.join(" ")}\``,
+                }
+            });
             return {
                 code: 0,
                 reason: `ESLint returned no errors or warnings on [${repo.owner}/${repo.name}](${repo.url})`,
@@ -218,7 +236,9 @@ const RunEslintStep: LintStep = {
                     check_run_id: check.id,
                     output: {
                         title: "ESLint warnings and errors",
-                        summary: `Running \`eslint ${args.join(" ")}\` resulted in the following warnings and errors`,
+                        summary: `Running ESLint resulted in warnings and/or errors.
+
+\`$ eslint ${args.join(" ")}\``,
                         annotations: chunk.map(r => ({
                             annotation_level: r.severity === 1 ? "warning" : "failure",
                             path: r.path,
