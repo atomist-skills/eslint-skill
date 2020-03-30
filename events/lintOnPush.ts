@@ -165,6 +165,7 @@ const RunEslintStep: LintStep = {
         const prefix = `${params.project.baseDir}/`;
 
         const lines = [];
+        // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
         const result = await params.project.spawn(cmd, args, { log: { write: msg => lines.push(msg) } });
 
         const violations: Array<{ message: string; path: string; startLine: number; startColumn: number; endLine: number; endColumn: number; severity: number }> = [];
@@ -197,6 +198,7 @@ const RunEslintStep: LintStep = {
             };
         } else if (result.status === 1 || violations.length > 0) {
             const api = gitHub(params.credential.token, repo.org.provider.apiUrl);
+            /* eslint-disable @typescript-eslint/camelcase */
             const check = (await api.checks.create({
                 owner: repo.owner,
                 repo: repo.name,
@@ -229,6 +231,7 @@ const RunEslintStep: LintStep = {
                     },
                 });
             }
+            /* eslint-enable @typescript-eslint/camelcase */
             return {
                 code: 0,
                 reason: `ESLint raised [errors or warnings](${check.html_url}) on [${repo.owner}/${repo.name}](${repo.url})`,
@@ -280,7 +283,7 @@ const PushStep: LintStep = {
                 await api.pulls.createReviewRequest({
                     owner: repo.owner,
                     repo: repo.name,
-                    pull_number: pr.number,
+                    pull_number: pr.number, // eslint-disable-line @typescript-eslint/camelcase
                     reviewers: [push.after.author.login],
                 });
                 return {

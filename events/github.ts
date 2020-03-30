@@ -35,6 +35,7 @@ export function gitHub(token: string, url: string = DefaultGitHubApiUrl): github
         auth: `token ${token}`,
         baseUrl: url.endsWith("/") ? url.slice(0, -1) : url,
         throttle: {
+            // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
             onRateLimit: (retryAfter: any, options: any) => {
                 console.warn(`Request quota exhausted for request '${options.method} ${options.url}'`);
 
@@ -44,6 +45,7 @@ export function gitHub(token: string, url: string = DefaultGitHubApiUrl): github
                 }
                 return false;
             },
+            // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
             onAbuseLimit: (retryAfter: any, options: any) => {
                 console.warn(`Abuse detected for request '${options.method} ${options.url}'`);
             },
