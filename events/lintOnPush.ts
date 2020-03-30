@@ -268,7 +268,8 @@ const PushStep: LintStep = {
             await params.project.push({ force: true });
 
             try {
-                const pr = (await gitHub(params.credential.token, repo.org.provider.apiUrl).pulls.create({
+                const api = gitHub(params.credential.token, repo.org.provider.apiUrl);
+                const pr = (await api.pulls.create({
                     owner: repo.owner,
                     repo: repo.name,
                     title: "Autofix: ESLint",
@@ -276,6 +277,12 @@ const PushStep: LintStep = {
                     base: push.branch,
                     head: `eslint-${push.branch}`,
                 })).data;
+                await api.pulls.createReviewRequest({
+                    owner: repo.owner,
+                    repo: repo.name,
+                    pull_number: pr.number,
+                    reviewers: [push.after.author.login],
+                });
                 return {
                     code: 0,
                     reason: `Pushed ESLint fix to [${repo.owner}/${repo.name}](${repo.url}) and raised PR [#${pr.number}](${pr.html_url})`,
