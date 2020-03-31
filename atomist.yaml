@@ -43,7 +43,7 @@ skill:
     use: atomist/package-npm-skill
 
   runtime:
-    memory: 1024
+    memory: 2048
     timeout: 540
     name: nodejs10
     entry_point: entryPoint
