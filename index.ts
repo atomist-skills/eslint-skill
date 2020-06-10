@@ -49,7 +49,7 @@ export const Skill = skill<LintConfiguration & { repos: any }>({
         config: {
             type: ParameterType.String,
             displayName: "Configuration",
-            description: "ESLint configuration in JSON format used if project does not contain own configuration",
+            description: "ESLint configuration in JSON format used if project does not contain own configuration. See the [ESLint documentation](https://eslint.org/docs/user-guide/configuring) on how to configure it.",
             lineStyle: LineStyle.Multiple,
             required: false,
         },
