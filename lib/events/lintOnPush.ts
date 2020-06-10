@@ -212,29 +212,56 @@ const RunEslintStep: LintStep = {
 
         const api = gitHub(params.project.id);
         if (result.status === 0 && violations.length === 0) {
-            await ctx.audit.log(`ESLint returned no errors or warnings`);
-            await api.checks.update({
-                check_run_id: params.checkId,
-                owner: repo.owner,
-                repo: repo.name,
-                head_sha: push.after.sha,
-                conclusion: "success",
-                status: "completed",
-                name: "eslint-skill",
-                external_id: ctx.correlationId,
-                started_at: params.start,
-                completed_at: new Date().toISOString(),
-                output: {
-                    title: "ESLint",
-                    summary: `Running \`eslint\` resulted in no warnings or errors.
+            const clean = (await git.status(params.project)).isClean;
+            if (clean) {
+                await ctx.audit.log(`ESLint returned no errors or warnings`);
+                await api.checks.update({
+                    check_run_id: params.checkId,
+                    owner: repo.owner,
+                    repo: repo.name,
+                    head_sha: push.after.sha,
+                    conclusion: "success",
+                    status: "completed",
+                    name: "eslint-skill",
+                    external_id: ctx.correlationId,
+                    started_at: params.start,
+                    completed_at: new Date().toISOString(),
+                    output: {
+                        title: "ESLint",
+                        summary: `Running \`eslint\` resulted in no warnings or errors.
 
 \`$ eslint ${args.join(" ")}\``,
-                },
-            });
-            return {
-                code: 0,
-                reason: `ESLint returned no errors or warnings on [${repo.owner}/${repo.name}](${repo.url})`,
-            };
+                    },
+                });
+                return {
+                    code: 0,
+                    reason: `ESLint returned no errors or warnings on [${repo.owner}/${repo.name}](${repo.url})`,
+                };
+            } else {
+                await ctx.audit.log(`ESLint fixed some errors or warnings`);
+                await api.checks.update({
+                    check_run_id: params.checkId,
+                    owner: repo.owner,
+                    repo: repo.name,
+                    head_sha: push.after.sha,
+                    conclusion: "action_required",
+                    status: "completed",
+                    name: "eslint-skill",
+                    external_id: ctx.correlationId,
+                    started_at: params.start,
+                    completed_at: new Date().toISOString(),
+                    output: {
+                        title: "ESLint",
+                        summary: `Running \`eslint\` fixed some errors and warnings.
+
+\`$ eslint ${args.join(" ")}\``,
+                    },
+                });
+                return {
+                    code: 0,
+                    reason: `ESLint fixed some errors or warnings on [${repo.owner}/${repo.name}](${repo.url})`,
+                };
+            }
         } else if (result.status === 1 || violations.length > 0) {
             const check = (await api.checks.update({
                 check_run_id: params.checkId,
@@ -314,20 +341,43 @@ const PushStep: LintStep = {
         };
 
         if (pushCfg === "pr" || (push.branch === push.repo.defaultBranch && pushCfg === "pr_default")) {
+            const changedFiles = (await params.project.exec("git", ["diff", "--name-only"]))
+                .stdout.split("\n").filter(f => !!f && f.length > 0);
+            const body = `ESLint fixed warnings and/or errors in the following files:
+
+${changedFiles.map(f => ` * \`${f}\``)}`;
             await git.createBranch(params.project, branch);
             await git.commit(params.project, commitMsg, commitOptions);
             await git.push(params.project, { force: true, branch });
 
             try {
                 const api = gitHub(params.project.id);
-                const pr = (await api.pulls.create({
+                let pr;
+                const openPrs = (await api.pulls.list({
                     owner: repo.owner,
                     repo: repo.name,
-                    title: "ESLint fixes",
-                    body: commitMsg,
+                    state: "open",
                     base: push.branch,
-                    head: branch,
+                    per_page: 100,
                 })).data;
+                if (openPrs.length === 1) {
+                    pr = openPrs[0];
+                    await api.pulls.update({
+                        owner: repo.owner,
+                        repo: repo.name,
+                        pull_number: pr.number,
+                        body,
+                    });
+                } else {
+                    pr = (await api.pulls.create({
+                        owner: repo.owner,
+                        repo: repo.name,
+                        title: "ESLint fixes",
+                        body,
+                        base: push.branch,
+                        head: branch,
+                    })).data;
+                }
                 await api.pulls.createReviewRequest({
                     owner: repo.owner,
                     repo: repo.name,
@@ -377,9 +427,9 @@ const ClosePrStep: LintStep = {
             state: "open",
             base: push.branch,
             per_page: 100,
-        }));
+        })).data;
 
-        for (const openPr of openPrs.data) {
+        for (const openPr of openPrs) {
             await ctx.audit.log(`Closing ESLint fix pull request [#${openPr.number}](${openPr.html_url}) because it is no longer needed`);
             await api.issues.createComment({
                 owner: repo.owner,
