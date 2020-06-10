@@ -1,5 +1,30 @@
 # `atomist/eslint-skill`
        
+<!---atomist-skill-description:start--->
+
+Automatically find and fix problems in your JavaScript
+code using ESLint
+
+<!---atomist-skill-description:end--->
+
+---
+
+<!---atomist-skill-long_description:start--->
+
+# Find Problems
+ESLint statically analyzes your code to quickly find problems. 
+ESLint is built into most text editors and you can run ESLint
+as part of your continuous integration pipeline.
+
+# Fix Automatically
+Many problems ESLint finds can be automatically fixed. ESLint
+fixes are syntax-aware so you won't experience errors introduced
+by traditional find-and-replace algorithms.
+
+<!---atomist-skill-long_description:end--->
+
+---
+       
 <!---atomist-skill-readme:start---> 
 
 This Skill runs [ESLint](https://eslint.org) on JavaScript projects.

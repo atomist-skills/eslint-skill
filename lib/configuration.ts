@@ -18,13 +18,13 @@ export interface LintConfiguration {
     ignores?: string[];
     config?: string;
     ext?: string[];
-    env?: string[];
-    global?: string[];
-    fix?: boolean;
-    push?: "commit_default" | "commit" | "pr";
+    commitMsg?: string;
+    args?: string[];
+    push?: "none" | "commit_default" | "commit" | "pr" | "pr_default";
 }
 
 export const DefaultLintConfiguration: LintConfiguration = {
     ignores: ["node_modules"],
-    fix: true,
+    ext: [".js"],
+    commitMsg: `ESLint fixes\n\n[atomist:generated]\n[atomist-skill:atomist/eslint-skill]`,
 };

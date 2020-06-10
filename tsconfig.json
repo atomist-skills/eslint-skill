@@ -24,10 +24,6 @@
     "bin/*.ts",
     "lib/**/*.ts",
     "test/**/*.ts",
-    "goals/*.ts",
-    "commands/*.ts",
-    "events/*.ts",
-    "tests/*.ts"
   ],
   "exclude": [
     ".#*"

@@ -19,10 +19,11 @@ import {
     EventContext,
     EventHandler,
 } from "@atomist/skill/lib/handler";
-import {
-    gitHubComRepository,
-    Project,
-} from "@atomist/skill/lib/project";
+import { gitHubComRepository } from "@atomist/skill/lib/project";
+import * as git from "@atomist/skill/lib/project/git";
+import { gitHub } from "@atomist/skill/lib/project/github";
+import { Project } from "@atomist/skill/lib/project/project";
+import { globFiles } from "@atomist/skill/lib/project/util";
 import {
     GitHubAppCredential,
     gitHubAppToken,
@@ -34,13 +35,11 @@ import {
 } from "@atomist/skill/lib/steps";
 import * as fs from "fs-extra";
 import * as _ from "lodash";
-import * as path from "path";
 import {
     DefaultLintConfiguration,
     LintConfiguration,
-} from "./configuration";
-import { gitHub } from "./github";
-import { LintOnPushSubscription } from "./types";
+} from "../configuration";
+import { LintOnPushSubscription } from "../typings/types";
 
 interface LintParameters {
     project: Project;
@@ -91,7 +90,7 @@ const CloneRepositoryStep: LintStep = {
 const NpmInstallStep: LintStep = {
     name: "npm install",
     run: async (ctx, params) => {
-        if (await params.project.hasFile("package-lock.json")) {
+        if (await fs.pathExists(params.project.path("package-lock.json"))) {
             await params.project.spawn("npm", ["ci"], { env: { ...process.env, NODE_ENV: "development" } });
         } else {
             await params.project.spawn("npm", ["install"], { env: { ...process.env, NODE_ENV: "development" } });
@@ -108,9 +107,9 @@ const ValidateRepositoryStep: LintStep = {
         const push = ctx.data.Push[0];
         const repo = push.repo;
 
-        if (!(await params.project.hasFile("node_modules/.bin/eslint"))) {
+        if (!(await fs.pathExists(params.project.path("node_modules", ".bin", "eslint")))) {
             return {
-                code: 1,
+                code: 0,
                 visibility: "hidden",
                 reason: `No ESLint installed in [${repo.owner}/${repo.name}](${repo.url})`,
             };
@@ -131,38 +130,40 @@ const RunEslintStep: LintStep = {
             ...DefaultLintConfiguration,
             ...ctx.configuration[0].parameters,
         };
-        const cmd = path.join(params.project.baseDir, "node_modules", ".bin", "eslint");
+        const cmd = params.project.path("node_modules", ".bin", "eslint");
         const args: string[] = [];
-        const reportFile = path.join(params.project.baseDir, `eslintreport-${push.after.sha.slice(0, 7)}.json`);
-        const configFile = path.join(params.project.baseDir, `eslintrc-${push.after.sha.slice(0, 7)}.json`);
-        const ignoreFile = path.join(params.project.baseDir, `eslintignore-${push.after.sha.slice(0, 7)}.json`);
+        const reportFile = params.project.path(`eslintreport-${push.after.sha.slice(0, 7)}.json`);
+        const configFile = params.project.path(`eslintrc-${push.after.sha.slice(0, 7)}.json`);
+        const ignoreFile = params.project.path(`eslintignore-${push.after.sha.slice(0, 7)}.json`);
         const filesToDelete = [reportFile];
 
-        cfg.env?.forEach(e => args.push("--env", e));
         cfg.ext?.forEach(e => args.push("--ext", e));
-        cfg.global?.forEach(e => args.push("--global", e));
         args.push("--format", "json");
         args.push("--output-file", reportFile);
+        cfg.args?.forEach(a => args.push(a));
 
         // Add .eslintignore if missing
-        if (!(await params.project.hasFile(".eslintignore")) && !!cfg.ignores) {
+        if (!(await fs.pathExists(params.project.path(".eslintignore"))) && !!cfg.ignores) {
             await fs.writeFile(ignoreFile, cfg.ignores.join("\n"));
             filesToDelete.push(ignoreFile);
             args.push("--ignore-path", ignoreFile);
         }
+
         // Add .eslintrc.json if missing
-        if (!(await params.project.hasFile(".eslintrc.json")) && !!cfg.config) {
+        const configs = await globFiles(params.project, ".eslintrc.*");
+        const pj = await fs.readJson(params.project.path("package.json"));
+        if ((configs.length === 0 && !pj.eslintConfig) && !!cfg.config) {
             await fs.writeFile(configFile, cfg.config);
             filesToDelete.push(configFile);
             args.push("--config", configFile);
         }
 
-        if (cfg.fix) {
+        if (!!cfg.push && cfg.push !== "none") {
             args.push("--fix");
         }
         args.push(".");
 
-        const prefix = `${params.project.baseDir}/`;
+        const prefix = `${params.project.path()}/`;
 
         const lines = [];
         // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
@@ -190,7 +191,7 @@ const RunEslintStep: LintStep = {
             await fs.remove(file);
         }
 
-        const api = gitHub(params.credential.token, repo.org.provider.apiUrl);
+        const api = gitHub(params.project.id);
         if (result.status === 0 && violations.length === 0) {
             await ctx.audit.log(`ESLint returned no errors or warnings`);
             /* eslint-disable @typescript-eslint/camelcase */
@@ -277,25 +278,29 @@ const PushStep: LintStep = {
     name: "push",
     runWhen: async (ctx, params) => {
         const pushCfg = ctx.configuration[0]?.parameters?.push;
-        return !!pushCfg && !(await params.project.gitStatus()).isClean;
+        return !!pushCfg && pushCfg !== "none" && !(await git.status(params.project)).isClean;
     },
     run: async (ctx, params) => {
-        const pushCfg = ctx.configuration[0]?.parameters?.push;
+        const cfg: LintConfiguration = {
+            ...DefaultLintConfiguration,
+            ...ctx.configuration[0].parameters,
+        };
+        const pushCfg = cfg.push;
         const push = ctx.data.Push[0];
         const repo = push.repo;
-        const commitMsg = `Autofix: ESLint\n\n[atomist:generated]\n[atomist-skill:atomist/eslint-skill]`;
+        const commitMsg = cfg.commitMsg;
 
-        if (pushCfg === "pr") {
-            await params.project.createBranch(`eslint-${push.branch}`);
-            await params.project.commit(commitMsg);
-            await params.project.push({ force: true });
+        if (pushCfg === "pr" || (push.branch === push.repo.defaultBranch && pushCfg === "pr_default")) {
+            await git.createBranch(params.project, `eslint-${push.branch}`);
+            await git.commit(params.project, commitMsg);
+            await git.push(params.project, { force: true });
 
             try {
-                const api = gitHub(params.credential.token, repo.org.provider.apiUrl);
+                const api = gitHub(params.project.id);
                 const pr = (await api.pulls.create({
                     owner: repo.owner,
                     repo: repo.name,
-                    title: "Autofix: ESLint",
+                    title: "ESLint fixes",
                     body: commitMsg,
                     base: push.branch,
                     head: `eslint-${push.branch}`,
@@ -308,19 +313,27 @@ const PushStep: LintStep = {
                 });
                 return {
                     code: 0,
-                    reason: `Pushed ESLint fix to [${repo.owner}/${repo.name}](${repo.url}) and raised PR [#${pr.number}](${pr.html_url})`,
+                    reason: `Pushed ESLint fixes to [${repo.owner}/${repo.name}/eslint-${push.branch}](${repo.url}) and raised PR [#${pr.number}](${pr.html_url})`,
                 };
             } catch (e) {
                 // This might fail if the PR already exists
             }
+            return {
+                code: 0,
+                reason: `Pushed ESLint fixes to [${repo.owner}/${repo.name}/eslint-${push.branch}](${repo.url})`,
+            };
 
         } else if (pushCfg === "commit" || (push.branch === push.repo.defaultBranch && pushCfg === "commit_default")) {
-            await params.project.commit(commitMsg);
-            await params.project.push();
+            await git.commit(params.project, commitMsg);
+            await git.push(params.project);
+            return {
+                code: 0,
+                reason: `Pushed ESLint fixes to [${repo.owner}/${repo.name}/${push.branch}](${repo.url})`,
+            };
         }
         return {
             code: 0,
-            reason: `Pushed ESLint fix to [${repo.owner}/${repo.name}](${repo.url})`,
+            reason: `Not pushed ESLint fixes because of configuration`,
         };
     },
 };

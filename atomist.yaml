@@ -63,6 +63,8 @@ parameters:
           value: commit_default
         - text: Commit to branch
           value: commit
+        - text: Raise Pull Request for default branch only
+          value: pr_default
         - text: Raise Pull Request
           value: pr
       required: false
