@@ -335,6 +335,46 @@ const PushStep: LintStep = {
     },
 };
 
+const ClosePrStep: LintStep = {
+    name: "close pr",
+    runWhen: async (ctx, params) => {
+        return (await git.status(params.project)).isClean;
+    },
+    run: async (ctx, params) => {
+        const push = ctx.data.Push[0];
+        const repo = push.repo;
+
+        const api = gitHub(params.project.id);
+        const openPrs = (await api.pulls.list({
+            owner: repo.owner,
+            repo: repo.name,
+            state: "open",
+            head: `eslint-${push.branch}`,
+            per_page: 100,
+        }));
+
+        for (const openPr of openPrs.data) {
+            await ctx.audit.log(`Closing ESLint fix pull request [#${openPr.number}](${openPr.html_url}) because it is no longer needed`);
+            await api.issues.createComment({
+                owner: repo.owner,
+                repo: repo.name,
+                issue_number: openPr.number,
+                body: "Closing pull request because all changes have been applied to base branch",
+            });
+            await api.pulls.update({
+                owner: repo.owner,
+                repo: repo.name,
+                pull_number: openPr.number,
+                state: "closed",
+            });
+        }
+
+        return {
+            code: 0,
+        }
+    },
+};
+
 export const handler: EventHandler<LintOnPushSubscription, LintConfiguration> = async ctx => {
     return runSteps({
         context: ctx,
@@ -344,6 +384,7 @@ export const handler: EventHandler<LintOnPushSubscription, LintConfiguration> = 
             NpmInstallStep,
             ValidateRepositoryStep,
             RunEslintStep,
+            ClosePrStep,
             PushStep,
         ],
     });
