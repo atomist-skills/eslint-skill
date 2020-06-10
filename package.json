@@ -62,7 +62,7 @@
     "doc": "typedoc --mode modules --excludeExternals --ignoreCompilerErrors --exclude \"**/*.d.ts\" --out doc index.ts lib",
     "git:info": "atm-git-info",
     "gql:gen": "graphql-codegen",
-    "lint": "eslint --format compact --ext .ts .",
+    "lint": "eslint --ext .ts .",
     "lint:fix": "npm run lint -- --fix",
     "start": "functions-framework --target=entryPoint --signature-type=event",
     "test": "echo no tests",

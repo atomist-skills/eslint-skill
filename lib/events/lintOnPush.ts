@@ -194,7 +194,6 @@ const RunEslintStep: LintStep = {
         const api = gitHub(params.project.id);
         if (result.status === 0 && violations.length === 0) {
             await ctx.audit.log(`ESLint returned no errors or warnings`);
-            /* eslint-disable @typescript-eslint/camelcase */
             await api.checks.create({
                 owner: repo.owner,
                 repo: repo.name,
@@ -217,7 +216,6 @@ const RunEslintStep: LintStep = {
                 reason: `ESLint returned no errors or warnings on [${repo.owner}/${repo.name}](${repo.url})`,
             };
         } else if (result.status === 1 || violations.length > 0) {
-            /* eslint-disable @typescript-eslint/camelcase */
             const check = (await api.checks.create({
                 owner: repo.owner,
                 repo: repo.name,
@@ -252,7 +250,6 @@ const RunEslintStep: LintStep = {
                     },
                 });
             }
-            /* eslint-enable @typescript-eslint/camelcase */
             return {
                 code: 0,
                 reason: `ESLint raised [errors or warnings](${check.html_url}) on [${repo.owner}/${repo.name}](${repo.url})`,
@@ -308,7 +305,7 @@ const PushStep: LintStep = {
                 await api.pulls.createReviewRequest({
                     owner: repo.owner,
                     repo: repo.name,
-                    pull_number: pr.number, // eslint-disable-line @typescript-eslint/camelcase
+                    pull_number: pr.number, 
                     reviewers: [push.after.author.login],
                 });
                 return {

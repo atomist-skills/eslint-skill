@@ -76,7 +76,7 @@ export const Skill = skill<LintConfiguration>({
             description: "Commit message to use when pushing ESLint fixes into the repository",
             placeHolder: "ESLint fixes",
             required: false,
-        }
+        },
     },
 
     subscriptions: [
