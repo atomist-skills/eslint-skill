@@ -22,10 +22,11 @@ import {
     LineStyle,
     ParameterType,
     skill,
+    repoFilter,
 } from "@atomist/skill/lib/skill";
 import { LintConfiguration } from "./lib/configuration";
 
-export const Skill = skill<LintConfiguration>({
+export const Skill = skill<LintConfiguration & { repos: any }>({
 
     runtime: {
         memory: 2048,
@@ -93,6 +94,7 @@ export const Skill = skill<LintConfiguration>({
             placeHolder: "ESLint fixes",
             required: false,
         },
+        repos: repoFilter(),
     },
 
     subscriptions: [
