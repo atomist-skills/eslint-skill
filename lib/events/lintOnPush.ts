@@ -308,10 +308,14 @@ const PushStep: LintStep = {
         const repo = push.repo;
         const commitMsg = cfg.commitMsg;
         const branch = `eslint-${push.branch}`;
+        const commitOptions = {
+            name: push.after.author?.name,
+            email: push.after.author?.emails?.[0]?.address,
+        };
 
         if (pushCfg === "pr" || (push.branch === push.repo.defaultBranch && pushCfg === "pr_default")) {
             await git.createBranch(params.project, branch);
-            await git.commit(params.project, commitMsg);
+            await git.commit(params.project, commitMsg, commitOptions);
             await git.push(params.project, { force: true, branch });
 
             try {
@@ -343,7 +347,7 @@ const PushStep: LintStep = {
             };
 
         } else if (pushCfg === "commit" || (push.branch === push.repo.defaultBranch && pushCfg === "commit_default")) {
-            await git.commit(params.project, commitMsg);
+            await git.commit(params.project, commitMsg, commitOptions);
             await git.push(params.project);
             return {
                 code: 0,

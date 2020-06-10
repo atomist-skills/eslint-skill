@@ -5,6 +5,10 @@ subscription lintOnPush {
             sha
             author {
                 login
+                name
+                emails {
+                    address
+                }
             }
         }
         branch
