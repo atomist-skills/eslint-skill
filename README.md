@@ -27,16 +27,32 @@ by traditional find-and-replace algorithms.
        
 <!---atomist-skill-readme:start---> 
 
-This Skill runs [ESLint](https://eslint.org) on JavaScript projects.
-   
-## Configuration
+# What it's useful for
 
+# Before you get started
 
-### Which repositories
+Connect and configure these integrations:
 
-By default, this skill will be enabled for all repositories in all organizations you have connected.
-To restrict the organizations or specific repositories on which the skill will run, you can explicitly
-choose organization(s) and repositories.
+1. **GitHub**
+2. **Slack** 
+
+The **GitHub** integration must be configured in order to use this skill. At least one repository must be selected.
+The **Slack** integration is optional but can be useful to run commands to close changelog sections. 
+
+# How to configure
+
+1. ****
+
+2. ****
+
+# How to lint your JavaScript code
+
+1. **** 
+
+5. **Enjoy not having to manually lint your code!**
+
+To create feature requests or bug reports, create an [issue in the repository for this skill](https://github.com/atomist-skills/eslint-skill/issues). 
+See the [code](https://github.com/atomist-skills/eslint-skill) for the skill.
 
 <!---atomist-skill-readme:end--->
 ---
