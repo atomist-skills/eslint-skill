@@ -371,7 +371,7 @@ const ClosePrStep: LintStep = {
 
         return {
             code: 0,
-        }
+        };
     },
 };
 
