@@ -45,6 +45,7 @@ interface LintParameters {
     project: Project;
     credential: GitHubCredential | GitHubAppCredential;
     start: string;
+    checkId: number;
 }
 
 type LintStep = Step<EventContext<LintOnPushSubscription, LintConfiguration>, LintParameters>;
@@ -62,6 +63,22 @@ const SetupStep: LintStep = {
             repo: repo.name,
             apiUrl: repo.org.provider.apiUrl,
         }));
+
+        const api = gitHub(gitHubComRepository({ owner: repo.owner, repo: repo.name, credential: params.credential }));
+        params.checkId = (await api.checks.create({
+            owner: repo.owner,
+            repo: repo.name,
+            head_sha: push.after.sha,
+            status: "in_progress",
+            name: "eslint-skill",
+            external_id: ctx.correlationId,
+            started_at: params.start,
+            output: {
+                title: "ESLint",
+                summary: `Running \`eslint\``,
+            },
+        })).data.id;
+
         return {
             code: 0,
         };
@@ -194,7 +211,8 @@ const RunEslintStep: LintStep = {
         const api = gitHub(params.project.id);
         if (result.status === 0 && violations.length === 0) {
             await ctx.audit.log(`ESLint returned no errors or warnings`);
-            await api.checks.create({
+            await api.checks.update({
+                check_run_id: params.checkId,
                 owner: repo.owner,
                 repo: repo.name,
                 head_sha: push.after.sha,
@@ -205,8 +223,8 @@ const RunEslintStep: LintStep = {
                 started_at: params.start,
                 completed_at: new Date().toISOString(),
                 output: {
-                    title: "ESLint warnings and errors",
-                    summary: `Running ESLint resulted in no warnings or errors.
+                    title: "ESLint",
+                    summary: `Running \`eslint\` resulted in no warnings or errors.
 
 \`$ eslint ${args.join(" ")}\``,
                 },
@@ -216,7 +234,8 @@ const RunEslintStep: LintStep = {
                 reason: `ESLint returned no errors or warnings on [${repo.owner}/${repo.name}](${repo.url})`,
             };
         } else if (result.status === 1 || violations.length > 0) {
-            const check = (await api.checks.create({
+            const check = (await api.checks.update({
+                check_run_id: params.checkId,
                 owner: repo.owner,
                 repo: repo.name,
                 head_sha: push.after.sha,
@@ -230,12 +249,12 @@ const RunEslintStep: LintStep = {
             const chunks = _.chunk(violations, 50);
             for (const chunk of chunks) {
                 await api.checks.update({
+                    check_run_id: params.checkId,
                     owner: repo.owner,
                     repo: repo.name,
-                    check_run_id: check.id,
                     output: {
-                        title: "ESLint warnings and errors",
-                        summary: `Running ESLint resulted in warnings and/or errors.
+                        title: "ESLint",
+                        summary: `Running \`eslint\` resulted in warnings and/or errors.
 
 \`$ eslint ${args.join(" ")}\``,
                         annotations: chunk.map(r => ({
