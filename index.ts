@@ -23,6 +23,7 @@ import {
     ParameterType,
     skill,
     repoFilter,
+    ParameterVisibility,
 } from "@atomist/skill/lib/skill";
 import { LintConfiguration } from "./lib/configuration";
 
@@ -61,13 +62,13 @@ export const Skill = skill<LintConfiguration & { repos: any }>({
         args: {
             type: ParameterType.StringArray,
             displayName: "Extra arguments",
-            description: "Command line arguments passed to ESLint",
+            description: "Additional [command line arguments](https://eslint.org/docs/2.13.1/user-guide/command-line-interface) passed to ESLint",
             required: false,
         },
         push: {
             type: ParameterType.SingleChoice,
             displayName: "Fix Problems",
-            description: "Run ESLint with --fix option and push fixes back into the repository",
+            description: "Run ESLint with `--fix` option and determine how and when fixes should be committed back into the repository",
             defaultValue: "pr",
             options: [{
                 text: "Commit to default branch only",
@@ -90,9 +91,10 @@ export const Skill = skill<LintConfiguration & { repos: any }>({
         commitMsg: {
             type: ParameterType.String,
             displayName: "Commit message",
-            description: "Commit message to use when pushing ESLint fixes into the repository",
+            description: "Commit message to use when committing ESLint fixes back into the repository",
             placeHolder: "ESLint fixes",
             required: false,
+            visibility: ParameterVisibility.Hidden,
         },
         repos: repoFilter(),
     },
