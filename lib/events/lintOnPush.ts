@@ -109,6 +109,8 @@ const NpmInstallStep: LintStep = {
     run: async (ctx, params) => {
         if (await fs.pathExists(params.project.path("package-lock.json"))) {
             await params.project.spawn("npm", ["ci"], { env: { ...process.env, NODE_ENV: "development" } });
+        } else if (await fs.pathExists(params.project.path("yarn.lock"))) {
+            await params.project.spawn("yarn", ["install"], { env: { ...process.env, NODE_ENV: "development" } });
         } else {
             await params.project.spawn("npm", ["install"], { env: { ...process.env, NODE_ENV: "development" } });
         }
@@ -305,11 +307,12 @@ const PushStep: LintStep = {
         const push = ctx.data.Push[0];
         const repo = push.repo;
         const commitMsg = cfg.commitMsg;
+        const branch = `eslint-${push.branch}`;
 
         if (pushCfg === "pr" || (push.branch === push.repo.defaultBranch && pushCfg === "pr_default")) {
-            await git.createBranch(params.project, `eslint-${push.branch}`);
+            await git.createBranch(params.project, branch);
             await git.commit(params.project, commitMsg);
-            await git.push(params.project, { force: true });
+            await git.push(params.project, { force: true, branch });
 
             try {
                 const api = gitHub(params.project.id);
@@ -319,7 +322,7 @@ const PushStep: LintStep = {
                     title: "ESLint fixes",
                     body: commitMsg,
                     base: push.branch,
-                    head: `eslint-${push.branch}`,
+                    head: branch,
                 })).data;
                 await api.pulls.createReviewRequest({
                     owner: repo.owner,
@@ -329,14 +332,14 @@ const PushStep: LintStep = {
                 });
                 return {
                     code: 0,
-                    reason: `Pushed ESLint fixes to [${repo.owner}/${repo.name}/eslint-${push.branch}](${repo.url}) and raised PR [#${pr.number}](${pr.html_url})`,
+                    reason: `Pushed ESLint fixes to [${repo.owner}/${repo.name}/${branch}](${repo.url}) and raised PR [#${pr.number}](${pr.html_url})`,
                 };
             } catch (e) {
                 // This might fail if the PR already exists
             }
             return {
                 code: 0,
-                reason: `Pushed ESLint fixes to [${repo.owner}/${repo.name}/eslint-${push.branch}](${repo.url})`,
+                reason: `Pushed ESLint fixes to [${repo.owner}/${repo.name}/${branch}](${repo.url})`,
             };
 
         } else if (pushCfg === "commit" || (push.branch === push.repo.defaultBranch && pushCfg === "commit_default")) {

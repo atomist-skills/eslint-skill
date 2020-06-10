@@ -29,6 +29,8 @@ by traditional find-and-replace algorithms.
 
 # What it's useful for
 
+
+
 # Before you get started
 
 Connect and configure these integrations:
@@ -41,13 +43,13 @@ The **Slack** integration is optional but can be useful to run commands to close
 
 # How to configure
 
-1. ****
+1. ** **
 
-2. ****
+2. ** **
 
 # How to lint your JavaScript code
 
-1. **** 
+1. ** ** 
 
 5. **Enjoy not having to manually lint your code!**
 
