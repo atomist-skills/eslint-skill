@@ -371,7 +371,7 @@ const ClosePrStep: LintStep = {
             owner: repo.owner,
             repo: repo.name,
             state: "open",
-            head: `eslint-${push.branch}`,
+            base: push.branch,
             per_page: 100,
         }));
 
