@@ -72,6 +72,7 @@ const SetupStep: LintStep = {
             status: "in_progress",
             name: "eslint-skill",
             external_id: ctx.correlationId,
+            details_url: ctx.audit.url,
             started_at: params.start,
             output: {
                 title: "ESLint",
@@ -305,11 +306,46 @@ const RunEslintStep: LintStep = {
         } else if (result.status === 2) {
             await ctx.audit.log(`Running ESLint failed with configuration or internal error:`, Severity.ERROR);
             await ctx.audit.log(lines.join("\n"), Severity.ERROR);
+            await api.checks.update({
+                check_run_id: params.checkId,
+                owner: repo.owner,
+                repo: repo.name,
+                head_sha: push.after.sha,
+                conclusion: "action_required",
+                status: "completed",
+                name: "eslint-skill",
+                external_id: ctx.correlationId,
+                started_at: params.start,
+                completed_at: new Date().toISOString(),
+                output: {
+                    title: "ESLint",
+                    summary: `Running ESLint failed with a configuration error:
+\`\`\`
+${lines.join("˜n")}
+\`\`\``,
+                },
+            });
             return {
                 code: 1,
                 reason: `Running ESLint failed with a configuration error`,
             };
         } else {
+            await api.checks.update({
+                check_run_id: params.checkId,
+                owner: repo.owner,
+                repo: repo.name,
+                head_sha: push.after.sha,
+                conclusion: "action_required",
+                status: "completed",
+                name: "eslint-skill",
+                external_id: ctx.correlationId,
+                started_at: params.start,
+                completed_at: new Date().toISOString(),
+                output: {
+                    title: "ESLint",
+                    summary: `Unknown ESLint exit code: \`${result.status}\``,
+                },
+            });
             return {
                 code: 1,
                 visibility: "hidden",
