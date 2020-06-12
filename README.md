@@ -2,7 +2,7 @@
        
 <!---atomist-skill-description:start--->
 
-Automatically find and fix problems in your JavaScript
+Find and fix problems in your JavaScript
 code using ESLint
 
 <!---atomist-skill-description:end--->
@@ -28,6 +28,8 @@ by traditional find-and-replace algorithms.
 <!---atomist-skill-readme:start---> 
 
 # What it's useful for
+
+With this skill you can automatically keep your JavaScript code linted using ESLint on all your NPM projects.
 
 
 
