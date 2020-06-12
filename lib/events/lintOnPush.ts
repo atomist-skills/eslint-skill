@@ -129,6 +129,7 @@ const NpmInstallStep: LintStep = {
         const cfg = ctx.configuration[0].parameters;
         if (cfg.modules?.length > 0) {
             await params.project.spawn("npm", ["install", ...cfg.modules, "--save-dev"], opts);
+            await params.project.spawn("git", ["reset", "--hard"], opts);
         }
         return {
             code: 0,
