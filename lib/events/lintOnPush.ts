@@ -64,22 +64,6 @@ const SetupStep: LintStep = {
             apiUrl: repo.org.provider.apiUrl,
         }));
 
-        const api = gitHub(gitHubComRepository({ owner: repo.owner, repo: repo.name, credential: params.credential }));
-        params.checkId = (await api.checks.create({
-            owner: repo.owner,
-            repo: repo.name,
-            head_sha: push.after.sha,
-            status: "in_progress",
-            name: "eslint-skill",
-            external_id: ctx.correlationId,
-            details_url: ctx.audit.url,
-            started_at: params.start,
-            output: {
-                title: "ESLint",
-                summary: `Running \`eslint\``,
-            },
-        })).data.id;
-
         return {
             code: 0,
         };
@@ -99,6 +83,31 @@ const CloneRepositoryStep: LintStep = {
             sha: push.after.sha,
         }), { alwaysDeep: false, detachHead: true });
         await ctx.audit.log(`Cloned repository ${repo.owner}/${repo.name} at sha ${push.after.sha.slice(0, 7)}`);
+
+        if (!(await fs.pathExists(params.project.path("package.json")))) {
+            return {
+                code: 1,
+                reason: "Project not an NPM project",
+                visibility: "hidden",
+            };
+        }
+
+        const api = gitHub(gitHubComRepository({ owner: repo.owner, repo: repo.name, credential: params.credential }));
+        params.checkId = (await api.checks.create({
+            owner: repo.owner,
+            repo: repo.name,
+            head_sha: push.after.sha,
+            status: "in_progress",
+            name: "eslint-skill",
+            external_id: ctx.correlationId,
+            details_url: ctx.audit.url,
+            started_at: params.start,
+            output: {
+                title: "ESLint",
+                summary: `Running \`eslint\``,
+            },
+        })).data.id;
+
         return {
             code: 0,
         };
@@ -421,7 +430,7 @@ ${changedFiles.map(f => ` * \`${f}\``)}`;
                 await api.pulls.createReviewRequest({
                     owner: repo.owner,
                     repo: repo.name,
-                    pull_number: pr.number, 
+                    pull_number: pr.number,
                     reviewers: [push.after.author.login],
                 });
                 return {
