@@ -341,7 +341,7 @@ const RunEslintStep: LintStep = {
 \`$ eslint ${argsString}\`
 
 \`\`\`
-${lines.join("˜n")}
+${lines.join("\n")}
 \`\`\``,
                 },
             });
