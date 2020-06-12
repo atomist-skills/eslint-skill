@@ -401,7 +401,7 @@ const PushStep: LintStep = {
                 .stdout.split("\n").filter(f => !!f && f.length > 0);
             const body = `ESLint fixed warnings and/or errors in the following files:
 
-${changedFiles.map(f => ` * \`${f}\``)}`;
+${changedFiles.map(f => ` * \`${f}\``).join("\n")}`;
             await git.createBranch(params.project, branch);
             await git.commit(params.project, commitMsg, commitOptions);
             await git.push(params.project, { force: true, branch });
