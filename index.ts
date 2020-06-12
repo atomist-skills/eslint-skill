@@ -21,9 +21,9 @@ import {
 import {
     LineStyle,
     ParameterType,
-    skill,
-    repoFilter,
     ParameterVisibility,
+    repoFilter,
+    skill,
 } from "@atomist/skill/lib/skill";
 import { LintConfiguration } from "./lib/configuration";
 
@@ -63,6 +63,12 @@ export const Skill = skill<LintConfiguration & { repos: any }>({
             type: ParameterType.StringArray,
             displayName: "Extra arguments",
             description: "Additional [command line arguments](https://eslint.org/docs/2.13.1/user-guide/command-line-interface) passed to ESLint",
+            required: false,
+        },
+        modules: {
+            type: ParameterType.StringArray,
+            displayName: "NPM packages to install",
+            description: "Use this parameter to configure NPM packages like eslint itself or plugins that should get installed",
             required: false,
         },
         push: {

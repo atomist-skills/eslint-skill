@@ -20,6 +20,7 @@ export interface LintConfiguration {
     ext?: string[];
     commitMsg?: string;
     args?: string[];
+    modules?: string[];
     push?: "none" | "commit_default" | "commit" | "pr" | "pr_default";
 }
 

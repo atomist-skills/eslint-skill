@@ -117,12 +117,18 @@ const CloneRepositoryStep: LintStep = {
 const NpmInstallStep: LintStep = {
     name: "npm install",
     run: async (ctx, params) => {
+        const opts = { env: { ...process.env, NODE_ENV: "development" } };
         if (await fs.pathExists(params.project.path("package-lock.json"))) {
-            await params.project.spawn("npm", ["ci"], { env: { ...process.env, NODE_ENV: "development" } });
+            await params.project.spawn("npm", ["ci"], opts);
         } else if (await fs.pathExists(params.project.path("yarn.lock"))) {
-            await params.project.spawn("yarn", ["install"], { env: { ...process.env, NODE_ENV: "development" } });
+            await params.project.spawn("yarn", ["install"], opts);
         } else {
-            await params.project.spawn("npm", ["install"], { env: { ...process.env, NODE_ENV: "development" } });
+            await params.project.spawn("npm", ["install"], opts);
+        }
+
+        const cfg = ctx.configuration[0].parameters;
+        if (cfg.modules?.length > 0) {
+            await params.project.spawn("npm", ["install", ...cfg.modules, "--save-dev"], opts);
         }
         return {
             code: 0,
@@ -138,7 +144,7 @@ const ValidateRepositoryStep: LintStep = {
 
         if (!(await fs.pathExists(params.project.path("node_modules", ".bin", "eslint")))) {
             return {
-                code: 0,
+                code: 1,
                 visibility: "hidden",
                 reason: `No ESLint installed in [${repo.owner}/${repo.name}](${repo.url})`,
             };
