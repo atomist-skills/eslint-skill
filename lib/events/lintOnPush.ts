@@ -211,6 +211,7 @@ const RunEslintStep: LintStep = {
             await fs.remove(file);
         }
 
+        const argsString = args.join(" ").split(`${params.project.path()}/`).join("");
         const api = gitHub(params.project.id);
         if (result.status === 0 && violations.length === 0) {
             const clean = (await git.status(params.project)).isClean;
@@ -231,7 +232,7 @@ const RunEslintStep: LintStep = {
                         title: "ESLint",
                         summary: `Running \`eslint\` resulted in no warnings or errors.
 
-\`$ eslint ${args.join(" ")}\``,
+\`$ eslint ${argsString}\``,
                     },
                 });
                 return {
@@ -255,7 +256,7 @@ const RunEslintStep: LintStep = {
                         title: "ESLint",
                         summary: `Running \`eslint\` fixed some errors and warnings.
 
-\`$ eslint ${args.join(" ")}\``,
+\`$ eslint ${argsString}\``,
                     },
                 });
                 return {
@@ -286,7 +287,7 @@ const RunEslintStep: LintStep = {
                         title: "ESLint",
                         summary: `Running \`eslint\` resulted in warnings and/or errors.
 
-\`$ eslint ${args.join(" ")}\``,
+\`$ eslint ${argsString}\``,
                         annotations: chunk.map(r => ({
                             annotation_level: r.severity === 1 ? "warning" : "failure",
                             path: r.path,
@@ -319,7 +320,10 @@ const RunEslintStep: LintStep = {
                 completed_at: new Date().toISOString(),
                 output: {
                     title: "ESLint",
-                    summary: `Running ESLint failed with a configuration error:
+                    summary: `Running ESLint failed with a configuration error.
+
+\`$ eslint ${argsString}\`
+
 \`\`\`
 ${lines.join("˜n")}
 \`\`\``,
