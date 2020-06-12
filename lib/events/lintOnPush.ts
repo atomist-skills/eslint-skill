@@ -209,7 +209,7 @@ const RunEslintStep: LintStep = {
         // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
         const result = await params.project.spawn(cmd, args, { log: { write: msg => lines.push(msg) } });
 
-        const violations: Array<{ message: string; path: string; startLine: number; startColumn: number; endLine: number; endColumn: number; severity: number }> = [];
+        const violations: Array<{ message: string; path: string; startLine: number; startColumn: number; endLine: number; endColumn: number; severity: number, rule: string }> = [];
         if (await fs.pathExists(reportFile)) {
             const report = await fs.readJson(reportFile);
             report?.filter(r => r.messages.length > 0).forEach(r => {
@@ -222,6 +222,7 @@ const RunEslintStep: LintStep = {
                         endLine: m.endLine,
                         endColumn: m.endColumn,
                         severity: m.severity,
+                        rule: m.ruleId,
                     });
                 });
             });
@@ -314,7 +315,7 @@ const RunEslintStep: LintStep = {
                             end_line: r.endLine || r.startLine,
                             start_offset: r.startColumn,
                             end_offset: r.endColumn || r.startColumn,
-                            message: r.message,
+                            message: `${r.message} (${r.rule})`,
                         })),
                     },
                 });
@@ -413,7 +414,7 @@ ${changedFiles.map(f => ` * \`${f}\``).join("\n")}
   <br/>
   <code>[atomist-skill:atomist/eslint-skill]</code>
   <br/>
-  <code>[atomist-skill-correlation-id:${ctx.correlationId}]</code>
+  <code>[atomist-correlation-id:${ctx.correlationId}]</code>
 </details>
 `;
             await git.createBranch(params.project, branch);
