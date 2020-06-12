@@ -128,6 +128,7 @@ const NpmInstallStep: LintStep = {
 
         const cfg = ctx.configuration[0].parameters;
         if (cfg.modules?.length > 0) {
+            await ctx.audit.log("Installing configured NPM packages");
             await params.project.spawn("npm", ["install", ...cfg.modules, "--save-dev"], opts);
             await params.project.spawn("git", ["reset", "--hard"], opts);
         }
@@ -202,6 +203,9 @@ const RunEslintStep: LintStep = {
         const prefix = `${params.project.path()}/`;
 
         const lines = [];
+        const argsString = args.join(" ").split(`${params.project.path()}/`).join("");
+        await ctx.audit.log(`Running ESLint with: $ eslint ${argsString}`);
+
         // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
         const result = await params.project.spawn(cmd, args, { log: { write: msg => lines.push(msg) } });
 
@@ -227,7 +231,6 @@ const RunEslintStep: LintStep = {
             await fs.remove(file);
         }
 
-        const argsString = args.join(" ").split(`${params.project.path()}/`).join("");
         const api = gitHub(params.project.id);
         if (result.status === 0 && violations.length === 0) {
             const clean = (await git.status(params.project)).isClean;
@@ -401,7 +404,18 @@ const PushStep: LintStep = {
                 .stdout.split("\n").filter(f => !!f && f.length > 0);
             const body = `ESLint fixed warnings and/or errors in the following files:
 
-${changedFiles.map(f => ` * \`${f}\``).join("\n")}`;
+${changedFiles.map(f => ` * \`${f}\``).join("\n")}
+
+<details>
+  <summary>Tags</summary>
+  <br/>
+  <code>[atomist:generated]</code>
+  <br/>
+  <code>[atomist-skill:atomist/eslint-skill]</code>
+  <br/>
+  <code>[atomist-skill-correlation-id:${ctx.correlationId}]</code>
+</details>
+`;
             await git.createBranch(params.project, branch);
             await git.commit(params.project, commitMsg, commitOptions);
             await git.push(params.project, { force: true, branch });
@@ -491,7 +505,7 @@ const ClosePrStep: LintStep = {
                 owner: repo.owner,
                 repo: repo.name,
                 issue_number: openPr.number,
-                body: "Closing pull request because all changes have been applied to base branch",
+                body: "Closing pull request because all fixable warnings and/or errors have been fixed in base branch",
             });
             await api.pulls.update({
                 owner: repo.owner,
