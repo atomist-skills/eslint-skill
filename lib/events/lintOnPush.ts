@@ -84,6 +84,14 @@ const CloneRepositoryStep: LintStep = {
         }), { alwaysDeep: false, detachHead: true });
         await ctx.audit.log(`Cloned repository ${repo.owner}/${repo.name} at sha ${push.after.sha.slice(0, 7)}`);
 
+        if (push.branch.startsWith("eslint-")) {
+            return {
+                code: 1,
+                reason: "Don't lint an eslint branch",
+                visibility: "hidden",
+            };
+        }
+
         if (!(await fs.pathExists(params.project.path("package.json")))) {
             return {
                 code: 1,
