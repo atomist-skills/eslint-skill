@@ -35,7 +35,9 @@ linted using ESLint.
 The skill can be configured to run the same consistent ESLint configuration
 across all your NPM projects; or use repository-specific setups. It manages a 
 GitHub Check with code-level annotations for linting rule violations and can
-raise pull requests for automatic ESLint fixes.   
+raise pull requests for automatic ESLint fixes. 
+
+![Fix PR](docs/images/pr.png)  
 
 # Before you get started
 
@@ -50,12 +52,16 @@ least one repository must be selected. The **Slack** integration is optional.
 # How to configure
 
 1. **Configure what files to lint**
+    
+    ![Ext](docs/images/ext.png)
 
     By default, ESLint lints every `.js` file in your project. If you are using
     eg TypeScript, you can use this parameter to configure what file types to
     lint.
 
 1. **Specify an optional ESLint configuration in JSON format**
+
+    ![Configuration](docs/images/config.png)
 
     This parameter lets you provide a [ESLint configuration](https://eslint.org/docs/user-guide/configuring)
     in JSON format that should be used for linting when the repository itself
@@ -66,16 +72,22 @@ least one repository must be selected. The **Slack** integration is optional.
 
 1. **Select files or folders to ignore during linting**
 
+    ![Ignore](docs/images/ignore.png)
+
     To speed up linting you can ignore files and folders like `node_modules`
     with this parameter.
 
 1. **Specify optional arguments to ESLint**
+
+    ![Args](docs/images/args.png)
 
     Use this parameter to configure optional arguments passed to the `eslint`
     command. Review the [ESLint documentation](https://eslint.org/docs/2.13.1/user-guide/command-line-interface)
     documentation for all available arguments. 
 
 1. **Configure ESLint packages and plugins to be installed**
+
+    ![Package](docs/images/packages.png)
 
     If your ESLint configuration needs special packages or plugins, use
     this parameter to specify the NPM packages that should be installed in
@@ -89,6 +101,8 @@ least one repository must be selected. The **Slack** integration is optional.
     * `@typescript-eslint/parser@^3.2.0`
 
 1. **Specify if and how ESLint fixes should be pushed back into the repository** 
+
+    ![Fix](docs/images/fix.png)
 
     ESLint can be executed with a `--fix` option. Use this parameter to configure
     how applied fixes should be pushed back into the repository. The following 
@@ -108,7 +122,12 @@ least one repository must be selected. The **Slack** integration is optional.
     to other branches will not be fixed
     * **Commit to any branch** - with this option fixes to pushes any branch will
     be committed straight to the branch
-    * **Do not run --fix**       
+    * **Do not run --fix** 
+    
+    Pull requests that get raised by this skill will automatically have reviewers
+    assigned based on the person who pushed code. Pull requests that are not
+    needed any longer, eg because all lint violations were fixed manually, are
+    closed automatically.        
 
 1. **Determine repository scope**
    
