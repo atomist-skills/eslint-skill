@@ -3,7 +3,8 @@
 <!---atomist-skill-description:start--->
 
 Find and fix problems in your JavaScript
-code using ESLint
+code using ESLint every time new commits are pushed
+to your repositories
 
 <!---atomist-skill-description:end--->
 
@@ -14,12 +15,14 @@ code using ESLint
 # Find Problems
 ESLint statically analyzes your code to quickly find problems. 
 ESLint is built into most text editors and you can run ESLint
-as part of your continuous integration pipeline.
+as part of your continuous integration pipeline.  This skill
+will run every time new commits are pushed to your repositories.
 
 # Fix Automatically
 Many problems ESLint finds can be automatically fixed. ESLint
 fixes are syntax-aware so you won't experience errors introduced
-by traditional find-and-replace algorithms.
+by traditional find-and-replace algorithms.  This skill can
+optionally fix linting errors via pull request or direct commits.
 
 <!---atomist-skill-long_description:end--->
 
@@ -29,11 +32,11 @@ by traditional find-and-replace algorithms.
 
 # What it's useful for
 
-With this skill you can automatically keep your JavaScript code
+With this skill you can automatically keep your JavaScript and TypeScript code
 linted using ESLint.
 
 The skill can be configured to run the same consistent ESLint configuration
-across all your NPM projects; or use repository-specific setups. It manages a 
+across all your NPM projects, or use repository-specific configurations. It manages a 
 GitHub Check with code-level annotations for linting rule violations and can
 raise pull requests for automatic ESLint fixes. 
 
@@ -55,8 +58,8 @@ least one repository must be selected. The **Slack** integration is optional.
     
     ![Ext](docs/images/ext.png)
 
-    By default, ESLint lints every `.js` file in your project. If you are using
-    eg TypeScript, you can use this parameter to configure what file types to
+    By default, ESLint lints every `.js` file in your project. If you are using,
+    for example, TypeScript, you can use this parameter to configure what file types to
     lint.
 
 1. **Specify an optional ESLint configuration in JSON format**
@@ -74,7 +77,7 @@ least one repository must be selected. The **Slack** integration is optional.
 
     ![Ignore](docs/images/ignore.png)
 
-    To speed up linting you can ignore files and folders like `node_modules`
+    To speed up linting you can ignore files and folders <!-- node_modules is ignored by default https://eslint.org/docs/user-guide/configuring#eslintignore -->
     with this parameter.
 
 1. **Specify optional arguments to ESLint**
@@ -83,7 +86,7 @@ least one repository must be selected. The **Slack** integration is optional.
 
     Use this parameter to configure optional arguments passed to the `eslint`
     command. Review the [ESLint documentation](https://eslint.org/docs/2.13.1/user-guide/command-line-interface)
-    documentation for all available arguments. 
+    for all available arguments. 
 
 1. **Configure ESLint packages and plugins to be installed**
 
@@ -109,24 +112,24 @@ least one repository must be selected. The **Slack** integration is optional.
     options are available:
     
     * **Raise pull request for default branch; commit to other branches** - with this
-    option fixes to pushes to the repository's default branch will be submitted via 
-    a pull request; fixes to pushes on other branches will be committed straight 
+    option, fixes on the default branch will be submitted via 
+    a pull request; fixes on other branches will be committed straight 
     onto the branch
-    * **Raise pull request for default branch only** - with this option fixes to 
-    pushes to the repository's default branch will be submitted via a pull
-    request; pushes to other branches will not be fixed 
-    * **Raise pull request for any branch** - with this option fixes to pushes to
-     any branch will be submitted via a pull request  
-    * **Commit to default branch only** - with this option fixes to pushes to the
-    repository's default branch will be committed straight to the branch; pushes
-    to other branches will not be fixed
-    * **Commit to any branch** - with this option fixes to pushes any branch will
+    * **Raise pull request for default branch only** - with this option, fixes on
+    the default branch will be submitted via a pull
+    request; fixes on other branches will not be persisted 
+    * **Raise pull request for any branch** - with this option, fixes on
+    all branches will be submitted via a pull request  
+    * **Commit to default branch only** - with this option, fixes on the
+    default branch will be committed straight to the branch; fixes on
+    other branches will not be persisted
+    * **Commit to any branch** - with this option, fixes on all branches will
     be committed straight to the branch
     * **Do not run --fix** 
     
-    Pull requests that get raised by this skill will automatically have reviewers
+    Pull requests that get raised by this skill will automatically have a reviewer
     assigned based on the person who pushed code. Pull requests that are not
-    needed any longer, eg because all lint violations were fixed manually, are
+    needed any longer, i.e., because all lint violations were fixed manually, are
     closed automatically.        
 
 1. **Determine repository scope**
