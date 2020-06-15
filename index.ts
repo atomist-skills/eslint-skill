@@ -78,7 +78,7 @@ export const Skill = skill<LintConfiguration & { repos: any }>({
             defaultValue: "pr_default_commit",
             options: [{
                 text: "Raise pull request for default branch; commit to other branches",
-                value: "pr_default_commit"
+                value: "pr_default_commit",
             }, {
                 text: "Raise pull request for default branch only",
                 value: "pr_default",
