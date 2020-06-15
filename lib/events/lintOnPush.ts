@@ -400,7 +400,8 @@ const PushStep: LintStep = {
             email: push.after.author?.emails?.[0]?.address,
         };
 
-        if (pushCfg === "pr" || (push.branch === push.repo.defaultBranch && pushCfg === "pr_default")) {
+        if (pushCfg === "pr" ||
+            (push.branch === push.repo.defaultBranch && (pushCfg === "pr_default" || pushCfg === "pr_default_commit"))) {
             const changedFiles = (await params.project.exec("git", ["diff", "--name-only"]))
                 .stdout.split("\n").filter(f => !!f && f.length > 0);
             const body = `ESLint fixed warnings and/or errors in the following files:
@@ -467,7 +468,9 @@ ${changedFiles.map(f => ` * \`${f}\``).join("\n")}
                 reason: `Pushed ESLint fixes to [${repo.owner}/${repo.name}/${branch}](${repo.url})`,
             };
 
-        } else if (pushCfg === "commit" || (push.branch === push.repo.defaultBranch && pushCfg === "commit_default")) {
+        } else if (pushCfg === "commit"
+            || (push.branch === push.repo.defaultBranch && pushCfg === "commit_default")
+            || (push.branch !== push.repo.defaultBranch && pushCfg === "pr_default_commit")) {
             await git.commit(params.project, commitMsg, commitOptions);
             await git.push(params.project);
             return {

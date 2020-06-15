@@ -75,19 +75,22 @@ export const Skill = skill<LintConfiguration & { repos: any }>({
             type: ParameterType.SingleChoice,
             displayName: "Fix Problems",
             description: "Run ESLint with `--fix` option and determine how and when fixes should be committed back into the repository",
-            defaultValue: "pr",
+            defaultValue: "pr_default_commit",
             options: [{
+                text: "Raise pull request for default branch; commit to other branches",
+                value: "pr_default_commit"
+            }, {
+                text: "Raise pull request for default branch only",
+                value: "pr_default",
+            }, {
+                text: "Raise pull request for any branch",
+                value: "pr",
+            }, {
                 text: "Commit to default branch only",
                 value: "commit_default",
             }, {
                 text: "Commit to any branch",
                 value: "commit",
-            }, {
-                text: "Raise Pull Request for default branch only",
-                value: "pr_default",
-            }, {
-                text: "Raise Pull Request for any branch",
-                value: "pr",
             }, {
                 text: "Do not run --fix",
                 value: "none",

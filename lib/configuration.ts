@@ -21,7 +21,7 @@ export interface LintConfiguration {
     commitMsg?: string;
     args?: string[];
     modules?: string[];
-    push?: "none" | "commit_default" | "commit" | "pr" | "pr_default";
+    push?: "none" | "commit_default" | "commit" | "pr" | "pr_default" | "pr_default_commit";
 }
 
 export const DefaultLintConfiguration: LintConfiguration = {
