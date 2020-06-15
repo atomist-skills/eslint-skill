@@ -408,6 +408,8 @@ const PushStep: LintStep = {
 
 ${changedFiles.map(f => ` * \`${f}\``).join("\n")}
 
+---
+
 <details>
   <summary>Tags</summary>
   <br/>
