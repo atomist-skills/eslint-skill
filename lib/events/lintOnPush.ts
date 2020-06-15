@@ -410,8 +410,8 @@ const PushStep: LintStep = {
 
         if (pushCfg === "pr" ||
             (push.branch === push.repo.defaultBranch && (pushCfg === "pr_default" || pushCfg === "pr_default_commit"))) {
-            const changedFiles = (await params.project.exec("git", ["diff", "--name-only"]))
-                .stdout.split("\n").filter(f => !!f && f.length > 0);
+            const changedFiles = (await params.project.exec("git", ["diff", "--stat"]))
+                .stdout.split("\n").map(f => f.trim()).filter(f => !!f && f.length > 0).slice(0, -1);
             const body = `ESLint fixed warnings and/or errors in the following files:
 
 ${changedFiles.map(f => ` * \`${f}\``).join("\n")}
