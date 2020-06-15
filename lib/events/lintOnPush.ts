@@ -209,7 +209,7 @@ const RunEslintStep: LintStep = {
         // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
         const result = await params.project.spawn(cmd, args, { log: { write: msg => lines.push(msg) } });
 
-        const violations: Array<{ message: string; path: string; startLine: number; startColumn: number; endLine: number; endColumn: number; severity: number, rule: string }> = [];
+        const violations: Array<{ message: string; path: string; startLine: number; startColumn: number; endLine: number; endColumn: number; severity: number; rule: string }> = [];
         if (await fs.pathExists(reportFile)) {
             const report = await fs.readJson(reportFile);
             report?.filter(r => r.messages.length > 0).forEach(r => {
