@@ -77,8 +77,8 @@ least one repository must be selected. The **Slack** integration is optional.
 
     ![Ignore](docs/images/ignore.png)
 
-    To speed up linting you can ignore files and folders <!-- node_modules is ignored by default https://eslint.org/docs/user-guide/configuring#eslintignore -->
-    with this parameter.
+    To speed up linting you can ignore files and folders with 
+    this parameter.
 
 1. **Specify optional arguments to ESLint**
 
