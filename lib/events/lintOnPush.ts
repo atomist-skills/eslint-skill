@@ -205,7 +205,10 @@ const RunEslintStep: LintStep = {
         const prefix = `${params.project.path()}/`;
 
         const lines = [];
-        const argsString = args.join(" ").split(`${params.project.path()}/`).join("");
+        const argsString = args
+            .join(" ")
+            .split(`${params.project.path()}/`)
+            .join("");
         await ctx.audit.log(`Running ESLint with: $ eslint ${argsString}`);
 
         // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
