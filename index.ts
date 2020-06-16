@@ -14,21 +14,11 @@
  * limitations under the License.
  */
 
-import {
-    gitHubResourceProvider,
-    slackResourceProvider,
-} from "@atomist/skill/lib/resource_providers";
-import {
-    LineStyle,
-    ParameterType,
-    ParameterVisibility,
-    repoFilter,
-    skill,
-} from "@atomist/skill/lib/skill";
+import { gitHubResourceProvider, slackResourceProvider } from "@atomist/skill/lib/resource_providers";
+import { LineStyle, ParameterType, ParameterVisibility, repoFilter, skill } from "@atomist/skill/lib/skill";
 import { LintConfiguration } from "./lib/configuration";
 
 export const Skill = skill<LintConfiguration & { repos: any }>({
-
     runtime: {
         memory: 2048,
         timeout: 540,
@@ -49,7 +39,8 @@ export const Skill = skill<LintConfiguration & { repos: any }>({
         config: {
             type: ParameterType.String,
             displayName: "Configuration",
-            description: "ESLint configuration in JSON format used if project does not contain own configuration. See the [ESLint documentation](https://eslint.org/docs/user-guide/configuring) on how to configure it.",
+            description:
+                "ESLint configuration in JSON format used if project does not contain own configuration. See the [ESLint documentation](https://eslint.org/docs/user-guide/configuring) on how to configure it.",
             lineStyle: LineStyle.Multiple,
             required: false,
         },
@@ -62,39 +53,49 @@ export const Skill = skill<LintConfiguration & { repos: any }>({
         args: {
             type: ParameterType.StringArray,
             displayName: "Extra arguments",
-            description: "Additional [command line arguments](https://eslint.org/docs/2.13.1/user-guide/command-line-interface) passed to ESLint",
+            description:
+                "Additional [command line arguments](https://eslint.org/docs/2.13.1/user-guide/command-line-interface) passed to ESLint",
             required: false,
         },
         modules: {
             type: ParameterType.StringArray,
             displayName: "NPM packages to install",
-            description: "Use this parameter to configure NPM packages like eslint itself or plugins that should get installed",
+            description:
+                "Use this parameter to configure NPM packages like eslint itself or plugins that should get installed",
             required: false,
         },
         push: {
             type: ParameterType.SingleChoice,
             displayName: "Fix Problems",
-            description: "Run ESLint with `--fix` option and determine how and when fixes should be committed back into the repository",
+            description:
+                "Run ESLint with `--fix` option and determine how and when fixes should be committed back into the repository",
             defaultValue: "pr_default_commit",
-            options: [{
-                text: "Raise pull request for default branch; commit to other branches",
-                value: "pr_default_commit",
-            }, {
-                text: "Raise pull request for default branch only",
-                value: "pr_default",
-            }, {
-                text: "Raise pull request for any branch",
-                value: "pr",
-            }, {
-                text: "Commit to default branch only",
-                value: "commit_default",
-            }, {
-                text: "Commit to any branch",
-                value: "commit",
-            }, {
-                text: "Do not run --fix",
-                value: "none",
-            }],
+            options: [
+                {
+                    text: "Raise pull request for default branch; commit to other branches",
+                    value: "pr_default_commit",
+                },
+                {
+                    text: "Raise pull request for default branch only",
+                    value: "pr_default",
+                },
+                {
+                    text: "Raise pull request for any branch",
+                    value: "pr",
+                },
+                {
+                    text: "Commit to default branch only",
+                    value: "commit_default",
+                },
+                {
+                    text: "Commit to any branch",
+                    value: "commit",
+                },
+                {
+                    text: "Do not run --fix",
+                    value: "none",
+                },
+            ],
             required: false,
         },
         commitMsg: {
@@ -108,8 +109,5 @@ export const Skill = skill<LintConfiguration & { repos: any }>({
         repos: repoFilter(),
     },
 
-    subscriptions: [
-        "file://graphql/subscription/*.graphql",
-    ],
-
+    subscriptions: ["file://graphql/subscription/*.graphql"],
 });
