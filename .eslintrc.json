@@ -23,24 +23,7 @@
     "@typescript-eslint"
   ],
   "rules": {
-    "comma-dangle": [
-      "error",
-      "always-multiline"
-    ],
-    "comma-spacing": "off",
-    "@typescript-eslint/comma-spacing": [
-      "error"
-    ],
     "@typescript-eslint/no-explicit-any": "off",
-    "@typescript-eslint/no-floating-promises": [
-      "error"
-    ],
-    "semi": "off",
-    "@typescript-eslint/semi": [
-      "error"
-    ],
-    "@typescript-eslint/member-delimiter-style": [
-      "error"
-    ]
+    "@typescript-eslint/no-floating-promises": ["error"]
   }
 }
