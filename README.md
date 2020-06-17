@@ -2,7 +2,8 @@
        
 <!---atomist-skill-description:start--->
 
-Find and fix problems in your JavaScript and TypeScript code, get pull requests with fixes.
+Find and fix problems in your JavaScript and TypeScript
+code, get pull requests with fixes.
 
 <!---atomist-skill-description:end--->
 
@@ -32,7 +33,8 @@ optionally fix linting errors via pull request or direct commits.
 
 Get consistency across your JavaScript and TypeScript repositories.
 
-* Run ESLint with the same consistent configuration across all of your NPM projects
+* Run ESLint with the same consistent configuration across all of your NPM 
+projects
 * Also supports repository-specific ESLint configurations
 * Uses GitHub Checks with code-level annotations for linting rule violations
 * Optionally get commits or pull requests with fixes
@@ -42,7 +44,7 @@ Get consistency across your JavaScript and TypeScript repositories.
 Connect and configure these integrations:
 
 1. **GitHub**
-2. **Slack** 
+1. **Slack** 
 
 The **GitHub** integration must be configured in order to use this skill. At
 least one repository must be selected. The **Slack** integration is optional.
@@ -53,17 +55,18 @@ least one repository must be selected. The **Slack** integration is optional.
     
     ![Ext](docs/images/ext.png)
 
-    By default, ESLint lints every `.js` file in your project. If you are using,
-    for example, TypeScript, you can use this parameter to configure what file types to
-    lint.
+    By default, ESLint lints every `.js` file in your project. If you are 
+    using, for example, TypeScript, you can use this parameter to configure 
+    what file types to lint.
 
-2. **Select files or folders to ignore**
+1. **Select files or folders to ignore**
 
     ![Ignore](docs/images/ignore.png)
 
-    To speed up linting or avoid linting specific files, select which files and folders to ignore.
+    To speed up linting or avoid linting specific files, select which files 
+    and folders to ignore.
 
-3. **Specify an optional ESLint configuration in JSON format**
+1. **Specify an optional ESLint configuration in JSON format**
 
     ![Configuration](docs/images/config.png)
 
@@ -73,7 +76,7 @@ least one repository must be selected. The **Slack** integration is optional.
    
     For a comprehensive example, see the [GraphQL project's ESLint configuration](https://github.com/graphql/graphql-js/blob/master/.eslintrc.yml).
 
-4. **Specify optional arguments to ESLint**
+1. **Specify optional arguments to ESLint**
 
     ![Args](docs/images/args.png)
 
@@ -81,7 +84,7 @@ least one repository must be selected. The **Slack** integration is optional.
     command. See the [ESLint documentation](https://eslint.org/docs/2.13.1/user-guide/command-line-interface)
     for a list of available arguments. 
 
-5. **Configure ESLint packages and plugins to be installed**
+1. **Configure ESLint packages and plugins to be installed**
 
     ![Package](docs/images/packages.png)
 
@@ -96,12 +99,13 @@ least one repository must be selected. The **Slack** integration is optional.
     * `@typescript-eslint/eslint-plugin@^3.2.0`
     * `@typescript-eslint/parser@^3.2.0`
 
-6. **Specify how to apply fixes** 
+1. **Specify how to apply fixes** 
 
     ![Fix](docs/images/fix.png)
 
-    Choose which fix apply option to use or choose not to apply fixes. When a fix option is selected, ESLint will be 
-    run with the `--fix` option. The following options are available:
+    Choose which fix apply option to use or choose not to apply fixes. 
+    When a fix option is selected, ESLint will be run with the `--fix` option. 
+    The following options are available:
     
     * **Raise pull request for default branch; commit to other branches** - with this
     option, fixes on the default branch will be submitted via 
@@ -124,7 +128,7 @@ least one repository must be selected. The **Slack** integration is optional.
     needed any longer, i.e., because all lint violations were fixed manually, are
     closed automatically.        
 
-7. **Determine repository scope**
+1. **Determine repository scope**
    
    ![Repository filter](docs/images/repo-filter.png)
    
@@ -138,9 +142,9 @@ least one repository must be selected. The **Slack** integration is optional.
 
 1. **Set up the skill by providing an ESLint configuration**
 
-2. **Commit and push your code changes** 
+1. **Commit and push your code changes** 
 
-3. **Enjoy automatic linting and fixes!**
+1. **Enjoy automatic linting and fixes!**
 
 To create feature requests or bug reports, create an [issue in the repository for this skill](https://github.com/atomist-skills/eslint-skill/issues). 
 See the [code](https://github.com/atomist-skills/eslint-skill) for the skill.

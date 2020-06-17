@@ -36,18 +36,18 @@ export const Skill = skill<LintConfiguration & { repos: any }>({
             description: "File extensions to lint (defaults to .js)",
             required: false,
         },
+        ignores: {
+            type: ParameterType.StringArray,
+            displayName: "Ignore Pattern",
+            description: "Pattern of files or folders to ignore during linting",
+            required: false,
+        },
         config: {
             type: ParameterType.String,
             displayName: "Configuration",
             description:
                 "ESLint configuration in JSON format used if project does not contain own configuration. See the [ESLint documentation](https://eslint.org/docs/user-guide/configuring) on how to configure it.",
             lineStyle: LineStyle.Multiple,
-            required: false,
-        },
-        ignores: {
-            type: ParameterType.StringArray,
-            displayName: "Ignore Pattern",
-            description: "Pattern of files or folders to ignore during linting",
             required: false,
         },
         args: {
@@ -92,7 +92,7 @@ export const Skill = skill<LintConfiguration & { repos: any }>({
                     value: "commit",
                 },
                 {
-                    text: "Do not run --fix",
+                    text: "Do not apply fixes",
                     value: "none",
                 },
             ],
