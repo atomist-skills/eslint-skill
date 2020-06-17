@@ -2,9 +2,8 @@
        
 <!---atomist-skill-description:start--->
 
-Find and fix problems in your JavaScript
-code using ESLint every time new commits are pushed
-to your repositories
+Find and fix problems in your JavaScript and TypeScript
+code, get pull requests with fixes.
 
 <!---atomist-skill-description:end--->
 
@@ -32,61 +31,58 @@ optionally fix linting errors via pull request or direct commits.
 
 # What it's useful for
 
-With this skill you can automatically keep your JavaScript and TypeScript code
-linted using ESLint.
+Get consistency across your JavaScript and TypeScript repositories.
 
-The skill can be configured to run the same consistent ESLint configuration
-across all your NPM projects, or use repository-specific configurations. It manages a 
-GitHub Check with code-level annotations for linting rule violations and can
-raise pull requests for automatic ESLint fixes. 
-
-![Fix PR](docs/images/pr.png)  
+* Run ESLint with the same consistent configuration across all of your NPM 
+projects
+* Also supports repository-specific ESLint configurations
+* Uses GitHub Checks with code-level annotations for linting rule violations
+* Optionally get commits or pull requests with fixes
 
 # Before you get started
 
 Connect and configure these integrations:
 
 1. **GitHub**
-2. **Slack** 
+1. **Slack** 
 
 The **GitHub** integration must be configured in order to use this skill. At
 least one repository must be selected. The **Slack** integration is optional.
 
 # How to configure
 
-1. **Configure what files to lint**
+1. **Select which files to lint**
     
     ![Ext](docs/images/ext.png)
 
-    By default, ESLint lints every `.js` file in your project. If you are using,
-    for example, TypeScript, you can use this parameter to configure what file types to
-    lint.
+    By default, ESLint lints every `.js` file in your project. If you are 
+    using, for example, TypeScript, you can use this parameter to configure 
+    what file types to lint.
+
+1. **Select files or folders to ignore**
+
+    ![Ignore](docs/images/ignore.png)
+
+    To speed up linting or avoid linting specific files, select which files 
+    and folders to ignore.
 
 1. **Specify an optional ESLint configuration in JSON format**
 
     ![Configuration](docs/images/config.png)
 
-    This parameter lets you provide a [ESLint configuration](https://eslint.org/docs/user-guide/configuring)
-    in JSON format that should be used for linting when the repository itself
+    Provide the [ESLint configuration](https://eslint.org/docs/user-guide/configuring)
+    in JSON format to be used for linting when a repository 
     does not have its own configuration.
    
-    Take a look at the ESLint configuration of the [GraphQL project](https://github.com/graphql/graphql-js/blob/master/.eslintrc.yml)
-    in case you want to see a comprehensive example configuration.    
-
-1. **Select files or folders to ignore during linting**
-
-    ![Ignore](docs/images/ignore.png)
-
-    To speed up linting you can ignore files and folders with 
-    this parameter.
+    For a comprehensive example, see the [GraphQL project's ESLint configuration](https://github.com/graphql/graphql-js/blob/master/.eslintrc.yml).
 
 1. **Specify optional arguments to ESLint**
 
     ![Args](docs/images/args.png)
 
-    Use this parameter to configure optional arguments passed to the `eslint`
-    command. Review the [ESLint documentation](https://eslint.org/docs/2.13.1/user-guide/command-line-interface)
-    for all available arguments. 
+    Configure optional arguments to pass to the `eslint`
+    command. See the [ESLint documentation](https://eslint.org/docs/2.13.1/user-guide/command-line-interface)
+    for a list of available arguments. 
 
 1. **Configure ESLint packages and plugins to be installed**
 
@@ -103,13 +99,13 @@ least one repository must be selected. The **Slack** integration is optional.
     * `@typescript-eslint/eslint-plugin@^3.2.0`
     * `@typescript-eslint/parser@^3.2.0`
 
-1. **Specify if and how ESLint fixes should be pushed back into the repository** 
+1. **Specify how to apply fixes** 
 
     ![Fix](docs/images/fix.png)
 
-    ESLint can be executed with a `--fix` option. Use this parameter to configure
-    how applied fixes should be pushed back into the repository. The following 
-    options are available:
+    Choose which fix apply option to use or choose not to apply fixes. 
+    When a fix option is selected, ESLint will be run with the `--fix` option. 
+    The following options are available:
     
     * **Raise pull request for default branch; commit to other branches** - with this
     option, fixes on the default branch will be submitted via 
@@ -125,7 +121,7 @@ least one repository must be selected. The **Slack** integration is optional.
     other branches will not be persisted
     * **Commit to any branch** - with this option, fixes on all branches will
     be committed straight to the branch
-    * **Do not run --fix** 
+    * **Do not apply fixes** 
     
     Pull requests that get raised by this skill will automatically have a reviewer
     assigned based on the person who pushed code. Pull requests that are not
@@ -144,11 +140,11 @@ least one repository must be selected. The **Slack** integration is optional.
 
 # How to lint your JavaScript code
 
-1. **Set up the skill by providing ESLint configuration, arguments and packages**
+1. **Set up the skill by providing an ESLint configuration**
 
-1. **Commit and push your code changes as normal and** 
+1. **Commit and push your code changes** 
 
-1. **Enjoy not having to manually lint your code!**
+1. **Enjoy automatic linting and fixes!**
 
 To create feature requests or bug reports, create an [issue in the repository for this skill](https://github.com/atomist-skills/eslint-skill/issues). 
 See the [code](https://github.com/atomist-skills/eslint-skill) for the skill.
