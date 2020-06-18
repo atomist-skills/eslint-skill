@@ -106,6 +106,13 @@ export const Skill = skill<LintConfiguration & { repos: any }>({
             required: false,
             visibility: ParameterVisibility.Hidden,
         },
+        labels: {
+            type: ParameterType.StringArray,
+            displayName: "Pull request labels",
+            description:
+                "Add additional labels to pull requests raised by this skill, e.g. to configure the [auto-merge](https://go.atomist.com/catalog/skills/atomist/github-auto-merge-skill) behavior.",
+            required: false,
+        },
         repos: repoFilter(),
     },
 

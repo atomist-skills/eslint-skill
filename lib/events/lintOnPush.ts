@@ -462,6 +462,7 @@ ${formatMarkers(ctx)}
                             body,
                             base: push.branch,
                             head: branch,
+                            labels: cfg.labels,
                         })
                     ).data;
                 }

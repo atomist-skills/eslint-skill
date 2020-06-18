@@ -126,7 +126,15 @@ least one repository must be selected. The **Slack** integration is optional.
     Pull requests that get raised by this skill will automatically have a reviewer
     assigned based on the person who pushed code. Pull requests that are not
     needed any longer, i.e., because all lint violations were fixed manually, are
-    closed automatically.        
+    closed automatically.
+    
+1. **Configure pull request labels**
+
+    Add additional labels to pull requests raised by this skill. 
+    
+    This is useful to influence how and when the PR should be auto-merged by the 
+    [Auto-merge Pull Request](https://go.atomist.com/catalog/skills/atomist/github-auto-merge-skill)
+    skill.          
 
 1. **Determine repository scope**
    
