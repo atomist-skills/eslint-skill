@@ -419,7 +419,7 @@ const PushStep: LintStep = {
             pushCfg === "pr" ||
             (push.branch === push.repo.defaultBranch && (pushCfg === "pr_default" || pushCfg === "pr_default_commit"))
         ) {
-            const changedFiles = (await params.project.exec("git", ["diff", "--stat"])).stdout
+            const changedFiles = (await params.project.exec("git", ["diff", "--name-only"])).stdout
                 .split("\n")
                 .map(f => f.trim())
                 .filter(f => !!f && f.length > 0)
