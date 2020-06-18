@@ -462,9 +462,16 @@ ${formatMarkers(ctx)}
                             body,
                             base: push.branch,
                             head: branch,
-                            labels: cfg.labels,
                         })
                     ).data;
+                    if (cfg.labels?.length > 0) {
+                        await api.issues.update({
+                            owner: repo.owner,
+                            repo: repo.name,
+                            issue_number: pr.number,
+                            labels: cfg.labels,
+                        });
+                    }
                 }
                 await api.pulls.createReviewRequest({
                     owner: repo.owner,
