@@ -18,7 +18,7 @@ import { Severity } from "@atomist/skill-logging";
 import { EventContext, EventHandler } from "@atomist/skill/lib/handler";
 import { gitHubComRepository } from "@atomist/skill/lib/project";
 import * as git from "@atomist/skill/lib/project/git";
-import { gitHub } from "@atomist/skill/lib/project/github";
+import { formatMarkers, gitHub } from "@atomist/skill/lib/project/github";
 import { Project } from "@atomist/skill/lib/project/project";
 import { globFiles } from "@atomist/skill/lib/project/util";
 import { GitHubAppCredential, gitHubAppToken, GitHubCredential } from "@atomist/skill/lib/secrets";
@@ -427,18 +427,7 @@ const PushStep: LintStep = {
             const body = `ESLint fixed warnings and/or errors in the following files:
 
 ${changedFiles.map(f => ` * \`${f}\``).join("\n")}
-
----
-
-<details>
-  <summary>Tags</summary>
-  <br/>
-  <code>[atomist:generated]</code>
-  <br/>
-  <code>[atomist-skill:atomist/eslint-skill]</code>
-  <br/>
-  <code>[atomist-correlation-id:${ctx.correlationId}]</code>
-</details>
+${formatMarkers(ctx)}
 `;
             await git.createBranch(params.project, branch);
             await git.commit(params.project, commitMsg, commitOptions);

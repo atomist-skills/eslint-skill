@@ -17,7 +17,7 @@
   "icon": "file://docs/images/icon.svg",
   "main": "node_modules/@atomist/skill/lib/function.js",
   "dependencies": {
-    "@atomist/skill": "0.1.0-master.20200610155212",
+    "@atomist/skill": "0.1.0-master.20200618080604",
     "@types/fs-extra": "^9.0.1",
     "@types/promise-retry": "^1.1.3",
     "fs-extra": "^9.0.1",
