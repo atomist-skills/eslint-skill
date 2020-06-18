@@ -18,7 +18,7 @@ This page details all runtime OSS dependencies of `@atomist/eslint-skill`.
 |[GPL-3.0](#gpl-30)|1|
 |[ISC](#isc)|31|
 |[MIT AND Zlib](#mit-and-zlib)|1|
-|[MIT](#mit)|220|
+|[MIT](#mit)|221|
 
 #### Apache-2.0
 Apache License 2.0 - [http://www.apache.org/licenses/LICENSE-2.0](http://www.apache.org/licenses/LICENSE-2.0)
@@ -26,7 +26,7 @@ Apache License 2.0 - [http://www.apache.org/licenses/LICENSE-2.0](http://www.apa
 | Name | Version | Publisher | Repository |
 |------|---------|-----------|------------|
 |`@atomist/skill-logging`|`0.1.0-master.20200316180914`|Atomist|[https://github.com/atomist/skill-logging](https://github.com/atomist/skill-logging)|
-|`@atomist/skill`|`0.1.0-master.20200610155212`|Atomist|[https://github.com/atomist/skill](https://github.com/atomist/skill)|
+|`@atomist/skill`|`0.1.0-master.20200618080604`|Atomist|[https://github.com/atomist/skill](https://github.com/atomist/skill)|
 |`@atomist/slack-messages`|`1.1.1`|Atomist|[https://github.com/atomist/slack-messages](https://github.com/atomist/slack-messages)|
 |`@google-cloud/common`|`2.4.0`|Google Inc.|[https://github.com/googleapis/nodejs-common](https://github.com/googleapis/nodejs-common)|
 |`@google-cloud/logging`|`7.3.0`|Google Inc.|[https://github.com/googleapis/nodejs-logging](https://github.com/googleapis/nodejs-logging)|
@@ -43,7 +43,7 @@ Apache License 2.0 - [http://www.apache.org/licenses/LICENSE-2.0](http://www.apa
 |`before-after-hook`|`2.1.0`|Gregor Martynus|[https://github.com/gr2m/before-after-hook](https://github.com/gr2m/before-after-hook)|
 |`ecdsa-sig-formatter`|`1.0.11`|D2L Corporation|[https://github.com/Brightspace/node-ecdsa-sig-formatter](https://github.com/Brightspace/node-ecdsa-sig-formatter)|
 |`eventid`|`1.0.0`|Google Inc.|[https://github.com/google/eventid-js](https://github.com/google/eventid-js)|
-|`fast-text-encoding`|`1.0.2`|Sam Thorogood|[https://github.com/samthor/fast-text-encoding](https://github.com/samthor/fast-text-encoding)|
+|`fast-text-encoding`|`1.0.3`|Sam Thorogood|[https://github.com/samthor/fast-text-encoding](https://github.com/samthor/fast-text-encoding)|
 |`gaxios`|`2.3.4`|Google, LLC|[https://github.com/googleapis/gaxios](https://github.com/googleapis/gaxios)|
 |`gaxios`|`3.0.3`|Google, LLC|[https://github.com/googleapis/gaxios](https://github.com/googleapis/gaxios)|
 |`gcp-metadata`|`3.5.0`|Stephen Sawchuk|[https://github.com/googleapis/gcp-metadata](https://github.com/googleapis/gcp-metadata)|
@@ -106,7 +106,7 @@ GNU General Public License v3.0 only - [https://www.gnu.org/licenses/gpl-3.0-sta
 
 | Name | Version | Publisher | Repository |
 |------|---------|-----------|------------|
-|`jszip`|`3.4.0`|Stuart Knightley|[https://github.com/Stuk/jszip](https://github.com/Stuk/jszip)|
+|`jszip`|`3.5.0`|Stuart Knightley|[https://github.com/Stuk/jszip](https://github.com/Stuk/jszip)|
 
 #### ISC
 ISC License - [https://www.isc.org/downloads/software-support-policy/isc-license/](https://www.isc.org/downloads/software-support-policy/isc-license/)
@@ -153,19 +153,20 @@ MIT License - [https://opensource.org/licenses/MIT](https://opensource.org/licen
 |`@nodelib/fs.scandir`|`2.1.3`||[https://github.com/nodelib/nodelib/tree/master/packages/fs/fs.scandir](https://github.com/nodelib/nodelib/tree/master/packages/fs/fs.scandir)|
 |`@nodelib/fs.stat`|`2.0.3`||[https://github.com/nodelib/nodelib/tree/master/packages/fs/fs.stat](https://github.com/nodelib/nodelib/tree/master/packages/fs/fs.stat)|
 |`@nodelib/fs.walk`|`1.2.4`||[https://github.com/nodelib/nodelib/tree/master/packages/fs/fs.walk](https://github.com/nodelib/nodelib/tree/master/packages/fs/fs.walk)|
-|`@octokit/auth-token`|`2.4.1`||[https://github.com/octokit/auth-token.js](https://github.com/octokit/auth-token.js)|
-|`@octokit/core`|`2.5.3`||[https://github.com/octokit/core.js](https://github.com/octokit/core.js)|
-|`@octokit/endpoint`|`6.0.2`||[https://github.com/octokit/endpoint.js](https://github.com/octokit/endpoint.js)|
-|`@octokit/graphql`|`4.5.0`||[https://github.com/octokit/graphql.js](https://github.com/octokit/graphql.js)|
-|`@octokit/plugin-paginate-rest`|`2.2.1`||[https://github.com/octokit/plugin-paginate-rest.js](https://github.com/octokit/plugin-paginate-rest.js)|
+|`@octokit/auth-token`|`2.4.2`||[https://github.com/octokit/auth-token.js](https://github.com/octokit/auth-token.js)|
+|`@octokit/core`|`2.5.4`||[https://github.com/octokit/core.js](https://github.com/octokit/core.js)|
+|`@octokit/endpoint`|`6.0.3`||[https://github.com/octokit/endpoint.js](https://github.com/octokit/endpoint.js)|
+|`@octokit/graphql`|`4.5.1`||[https://github.com/octokit/graphql.js](https://github.com/octokit/graphql.js)|
+|`@octokit/plugin-paginate-rest`|`2.2.3`||[https://github.com/octokit/plugin-paginate-rest.js](https://github.com/octokit/plugin-paginate-rest.js)|
 |`@octokit/plugin-request-log`|`1.0.0`||[https://github.com/octokit/plugin-request-log.js](https://github.com/octokit/plugin-request-log.js)|
 |`@octokit/plugin-rest-endpoint-methods`|`3.17.0`||[https://github.com/octokit/plugin-rest-endpoint-methods.js](https://github.com/octokit/plugin-rest-endpoint-methods.js)|
-|`@octokit/plugin-retry`|`3.0.2`||[https://github.com/octokit/plugin-retry.js](https://github.com/octokit/plugin-retry.js)|
-|`@octokit/plugin-throttling`|`3.2.1`||[https://github.com/octokit/plugin-throttling.js](https://github.com/octokit/plugin-throttling.js)|
-|`@octokit/request-error`|`2.0.1`||[https://github.com/octokit/request-error.js](https://github.com/octokit/request-error.js)|
-|`@octokit/request`|`5.4.4`||[https://github.com/octokit/request.js](https://github.com/octokit/request.js)|
-|`@octokit/rest`|`17.11.0`||[https://github.com/octokit/rest.js](https://github.com/octokit/rest.js)|
+|`@octokit/plugin-retry`|`3.0.3`||[https://github.com/octokit/plugin-retry.js](https://github.com/octokit/plugin-retry.js)|
+|`@octokit/plugin-throttling`|`3.2.2`||[https://github.com/octokit/plugin-throttling.js](https://github.com/octokit/plugin-throttling.js)|
+|`@octokit/request-error`|`2.0.2`||[https://github.com/octokit/request-error.js](https://github.com/octokit/request-error.js)|
+|`@octokit/request`|`5.4.5`||[https://github.com/octokit/request.js](https://github.com/octokit/request.js)|
+|`@octokit/rest`|`17.11.2`||[https://github.com/octokit/rest.js](https://github.com/octokit/rest.js)|
 |`@octokit/types`|`4.1.10`||[https://github.com/octokit/types.ts](https://github.com/octokit/types.ts)|
+|`@octokit/types`|`5.0.1`||[https://github.com/octokit/types.ts](https://github.com/octokit/types.ts)|
 |`@sindresorhus/is`|`1.2.0`|Sindre Sorhus|[https://github.com/sindresorhus/is](https://github.com/sindresorhus/is)|
 |`@tootallnate/once`|`1.1.2`|Nathan Rajlich|[https://github.com/TooTallNate/once](https://github.com/TooTallNate/once)|
 |`@types/color-name`|`1.1.1`||[https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)|
@@ -202,7 +203,7 @@ MIT License - [https://opensource.org/licenses/MIT](https://opensource.org/licen
 |`asynckit`|`0.4.0`|Alex Indigo|[https://github.com/alexindigo/asynckit](https://github.com/alexindigo/asynckit)|
 |`balanced-match`|`1.0.0`|Julian Gruber|[https://github.com/juliangruber/balanced-match](https://github.com/juliangruber/balanced-match)|
 |`base64-js`|`1.3.1`|T. Jameson Little|[https://github.com/beatgammit/base64-js](https://github.com/beatgammit/base64-js)|
-|`bignumber.js`|`7.2.1`|Michael Mclaughlin|[https://github.com/MikeMcl/bignumber.js](https://github.com/MikeMcl/bignumber.js)|
+|`bignumber.js`|`9.0.0`|Michael Mclaughlin|[https://github.com/MikeMcl/bignumber.js](https://github.com/MikeMcl/bignumber.js)|
 |`bottleneck`|`2.19.5`|Simon Grondin|[https://github.com/SGrondin/bottleneck](https://github.com/SGrondin/bottleneck)|
 |`brace-expansion`|`1.1.11`|Julian Gruber|[https://github.com/juliangruber/brace-expansion](https://github.com/juliangruber/brace-expansion)|
 |`braces`|`3.0.2`|Jon Schlinkert|[https://github.com/micromatch/braces](https://github.com/micromatch/braces)|
@@ -268,10 +269,10 @@ MIT License - [https://opensource.org/licenses/MIT](https://opensource.org/licen
 |`isarray`|`1.0.0`|Julian Gruber|[https://github.com/juliangruber/isarray](https://github.com/juliangruber/isarray)|
 |`isobject`|`4.0.0`|Jon Schlinkert|[https://github.com/jonschlinkert/isobject](https://github.com/jonschlinkert/isobject)|
 |`js-yaml`|`3.14.0`|Vladimir Zapparov|[https://github.com/nodeca/js-yaml](https://github.com/nodeca/js-yaml)|
-|`json-bigint`|`0.3.0`|Andrey Sidorov|[https://github.com/sidorares/json-bigint](https://github.com/sidorares/json-bigint)|
+|`json-bigint`|`0.3.1`|Andrey Sidorov|[https://github.com/sidorares/json-bigint](https://github.com/sidorares/json-bigint)|
 |`jsonfile`|`4.0.0`|JP Richardson|[https://github.com/jprichardson/node-jsonfile](https://github.com/jprichardson/node-jsonfile)|
 |`jsonfile`|`6.0.1`|JP Richardson|[https://github.com/jprichardson/node-jsonfile](https://github.com/jprichardson/node-jsonfile)|
-|`jszip`|`3.4.0`|Stuart Knightley|[https://github.com/Stuk/jszip](https://github.com/Stuk/jszip)|
+|`jszip`|`3.5.0`|Stuart Knightley|[https://github.com/Stuk/jszip](https://github.com/Stuk/jszip)|
 |`jwa`|`2.0.0`|Brian J. Brennan|[https://github.com/brianloveswords/node-jwa](https://github.com/brianloveswords/node-jwa)|
 |`jws`|`4.0.0`|Brian J Brennan|[https://github.com/brianloveswords/node-jws](https://github.com/brianloveswords/node-jws)|
 |`lie`|`3.3.0`||[https://github.com/calvinmetcalf/lie](https://github.com/calvinmetcalf/lie)|
