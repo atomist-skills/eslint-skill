@@ -72,7 +72,7 @@ const CloneRepositoryStep: LintStep = {
                 branch: push.branch,
                 sha: push.after.sha,
             }),
-            { alwaysDeep: false, detachHead: true },
+            { alwaysDeep: false, detachHead: false },
         );
         await ctx.audit.log(`Cloned repository ${repo.owner}/${repo.name} at sha ${push.after.sha.slice(0, 7)}`);
 
