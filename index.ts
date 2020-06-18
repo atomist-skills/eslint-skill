@@ -119,4 +119,5 @@ export const Skill = skill<LintConfiguration & { repos: any }>({
     subscriptions: [
         "file://graphql/subscription/*.graphql",
     ],
+    
 });
