@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 -   Display file name only in PR body. [a4cf9b6](https://github.com/atomist-skills/eslint-skill/commit/a4cf9b671f5485ce9ad560767fbb4fbf5fe5eda1)
 
+### Fixed
+
+-   Clone branch and not sha so that we can commit back. [484ee36](https://github.com/atomist-skills/eslint-skill/commit/484ee36fb31d36c79bfb65979900455ddda5c6b3)
+
 ## [1.0.1](https://github.com/atomist-skills/eslint-skill/tree/1.0.1) - 2020-06-17
 
 ### Added
