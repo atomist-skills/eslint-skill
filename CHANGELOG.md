@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist-skills/eslint-skill/compare/1.0.1...HEAD)
 
+### Changed
+
+-   Display file name only in PR body. [a4cf9b6](https://github.com/atomist-skills/eslint-skill/commit/a4cf9b671f5485ce9ad560767fbb4fbf5fe5eda1)
+
 ## [1.0.1](https://github.com/atomist-skills/eslint-skill/tree/1.0.1) - 2020-06-17
 
 ### Added
