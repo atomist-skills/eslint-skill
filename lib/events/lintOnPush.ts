@@ -441,7 +441,7 @@ ${formatMarkers(ctx)}
                         repo: repo.name,
                         state: "open",
                         base: push.branch,
-                        head: branch,
+                        head: `${repo.owner}:${branch}`,
                         per_page: 100,
                     })
                 ).data;
