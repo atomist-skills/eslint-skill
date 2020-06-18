@@ -422,8 +422,7 @@ const PushStep: LintStep = {
             const changedFiles = (await params.project.exec("git", ["diff", "--name-only"])).stdout
                 .split("\n")
                 .map(f => f.trim())
-                .filter(f => !!f && f.length > 0)
-                .slice(0, -1);
+                .filter(f => !!f && f.length > 0);
             const body = `ESLint fixed warnings and/or errors in the following files:
 
 ${changedFiles.map(f => ` * \`${f}\``).join("\n")}
@@ -442,6 +441,7 @@ ${formatMarkers(ctx)}
                         repo: repo.name,
                         state: "open",
                         base: push.branch,
+                        head: `${repo.owner}:${branch}`,
                         per_page: 100,
                     })
                 ).data;
