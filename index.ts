@@ -116,5 +116,7 @@ export const Skill = skill<LintConfiguration & { repos: any }>({
         repos: repoFilter(),
     },
 
-    subscriptions: ["file://graphql/subscription/*.graphql"],
+    subscriptions: [
+        "file://graphql/subscription/*.graphql",
+    ],
 });
