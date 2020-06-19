@@ -64,6 +64,15 @@ const CloneRepositoryStep: LintStep = {
     run: async (ctx, params) => {
         const push = ctx.data.Push[0];
         const repo = push.repo;
+
+        if (push.branch.startsWith("eslint-")) {
+            return {
+                code: 1,
+                reason: "Don't lint an eslint branch",
+                visibility: "hidden",
+            };
+        }
+
         params.project = await ctx.project.clone(
             gitHubComRepository({
                 owner: repo.owner,
@@ -76,18 +85,25 @@ const CloneRepositoryStep: LintStep = {
         );
         await ctx.audit.log(`Cloned repository ${repo.owner}/${repo.name} at sha ${push.after.sha.slice(0, 7)}`);
 
-        if (push.branch.startsWith("eslint-")) {
-            return {
-                code: 1,
-                reason: "Don't lint an eslint branch",
-                visibility: "hidden",
-            };
-        }
-
         if (!(await fs.pathExists(params.project.path("package.json")))) {
             return {
                 code: 1,
                 reason: "Project not an NPM project",
+                visibility: "hidden",
+            };
+        }
+
+        const includeGlobs = (ctx.configuration?.[0]?.parameters?.ext || [".js"])
+            .map(e => (!e.startsWith(".") ? `.${e}` : e))
+            .map(e => `**/*${e}`);
+        const ignores = ctx.configuration?.[0]?.parameters?.ignores || [];
+        const matchingFiles = await globFiles(params.project, includeGlobs, {
+            ignore: [".git", "node_modules", ...ignores],
+        });
+        if (matchingFiles.length === 0) {
+            return {
+                code: 1,
+                reason: "Project does not contain any matching files",
                 visibility: "hidden",
             };
         }
