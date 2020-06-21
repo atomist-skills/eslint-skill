@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 
-import { gitHubResourceProvider, slackResourceProvider } from "@atomist/skill/lib/resource_providers";
-import { LineStyle, ParameterType, ParameterVisibility, repoFilter, skill } from "@atomist/skill/lib/skill";
+import { LineStyle, parameter, ParameterType, ParameterVisibility, resourceProvider, skill } from "@atomist/skill";
 import { LintConfiguration } from "./lib/configuration";
 
 export const Skill = skill<LintConfiguration & { repos: any }>({
@@ -25,8 +24,8 @@ export const Skill = skill<LintConfiguration & { repos: any }>({
     },
 
     resourceProviders: {
-        github: gitHubResourceProvider({ minRequired: 1 }),
-        slack: slackResourceProvider({ minRequired: 0 }),
+        github: resourceProvider.gitHub({ minRequired: 1 }),
+        slack: resourceProvider.chat({ minRequired: 0 }),
     },
 
     parameters: {
@@ -113,7 +112,7 @@ export const Skill = skill<LintConfiguration & { repos: any }>({
                 "Add additional labels to pull requests raised by this skill, e.g. to configure the [auto-merge](https://go.atomist.com/catalog/skills/atomist/github-auto-merge-skill) behavior.",
             required: false,
         },
-        repos: repoFilter(),
+        repos: parameter.repoFilter(),
     },
 
     subscriptions: ["file://graphql/subscription/*.graphql"],

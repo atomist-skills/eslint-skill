@@ -14,23 +14,16 @@
  * limitations under the License.
  */
 
+import { EventContext, EventHandler, git, github, project, repository, runSteps, secret, Step } from "@atomist/skill";
 import { Severity } from "@atomist/skill-logging";
-import { EventContext, EventHandler } from "@atomist/skill/lib/handler";
-import { gitHubComRepository } from "@atomist/skill/lib/project";
-import * as git from "@atomist/skill/lib/project/git";
-import { formatMarkers, gitHub } from "@atomist/skill/lib/project/github";
-import { Project } from "@atomist/skill/lib/project/project";
-import { globFiles } from "@atomist/skill/lib/project/util";
-import { GitHubAppCredential, gitHubAppToken, GitHubCredential } from "@atomist/skill/lib/secrets";
-import { runSteps, Step } from "@atomist/skill/lib/steps";
 import * as fs from "fs-extra";
 import * as _ from "lodash";
 import { DefaultLintConfiguration, LintConfiguration } from "../configuration";
 import { LintOnPushSubscription } from "../typings/types";
 
 interface LintParameters {
-    project: Project;
-    credential: GitHubCredential | GitHubAppCredential;
+    project: project.Project;
+    credential: secret.GitHubCredential | secret.GitHubAppCredential;
     start: string;
     checkId: number;
 }
@@ -46,7 +39,7 @@ const SetupStep: LintStep = {
 
         params.start = new Date().toISOString();
         params.credential = await ctx.credential.resolve(
-            gitHubAppToken({
+            secret.gitHubAppToken({
                 owner: repo.owner,
                 repo: repo.name,
                 apiUrl: repo.org.provider.apiUrl,
@@ -74,7 +67,7 @@ const CloneRepositoryStep: LintStep = {
         }
 
         params.project = await ctx.project.clone(
-            gitHubComRepository({
+            repository.gitHub({
                 owner: repo.owner,
                 repo: repo.name,
                 credential: params.credential,
@@ -97,7 +90,7 @@ const CloneRepositoryStep: LintStep = {
             .map(e => (!e.startsWith(".") ? `.${e}` : e))
             .map(e => `**/*${e}`);
         const ignores = ctx.configuration?.[0]?.parameters?.ignores || [];
-        const matchingFiles = await globFiles(params.project, includeGlobs, {
+        const matchingFiles = await project.globFiles(params.project, includeGlobs, {
             ignore: [".git", "node_modules", ...ignores],
         });
         if (matchingFiles.length === 0) {
@@ -108,7 +101,7 @@ const CloneRepositoryStep: LintStep = {
             };
         }
 
-        const api = gitHub(gitHubComRepository({ owner: repo.owner, repo: repo.name, credential: params.credential }));
+        const api = github.api(params.project.id);
         params.checkId = (
             await api.checks.create({
                 owner: repo.owner,
@@ -203,7 +196,7 @@ const RunEslintStep: LintStep = {
         }
 
         // Add .eslintrc.json if missing
-        const configs = await globFiles(params.project, ".eslintrc.*");
+        const configs = await project.globFiles(params.project, ".eslintrc.*");
         const pj = await fs.readJson(params.project.path("package.json"));
         if (configs.length === 0 && !pj.eslintConfig && !!cfg.config) {
             await fs.writeFile(configFile, cfg.config);
@@ -259,7 +252,7 @@ const RunEslintStep: LintStep = {
             await fs.remove(file);
         }
 
-        const api = gitHub(params.project.id);
+        const api = github.api(params.project.id);
         if (result.status === 0 && violations.length === 0) {
             const clean = (await git.status(params.project)).isClean;
             if (clean) {
@@ -440,14 +433,14 @@ const PushStep: LintStep = {
             const body = `ESLint fixed warnings and/or errors in the following files:
 
 ${changedFiles.map(f => ` * \`${f}\``).join("\n")}
-${formatMarkers(ctx)}
+${github.formatMarkers(ctx)}
 `;
             await git.createBranch(params.project, branch);
             await git.commit(params.project, commitMsg, commitOptions);
             await git.push(params.project, { force: true, branch });
 
             try {
-                const api = gitHub(params.project.id);
+                const api = github.api(params.project.id);
                 let pr;
                 const openPrs = (
                     await api.pulls.list({
@@ -532,7 +525,7 @@ const ClosePrStep: LintStep = {
         const push = ctx.data.Push[0];
         const repo = push.repo;
 
-        const api = gitHub(params.project.id);
+        const api = github.api(params.project.id);
         const openPrs = (
             await api.pulls.list({
                 owner: repo.owner,
@@ -552,7 +545,8 @@ const ClosePrStep: LintStep = {
                 owner: repo.owner,
                 repo: repo.name,
                 issue_number: openPr.number,
-                body: "Closing pull request because all fixable warnings and/or errors have been fixed in base branch",
+                body: `Closing pull request because all fixable warnings and/or errors have been fixed in base branch
+${github.formatMarkers(ctx)}`,
             });
             await api.pulls.update({
                 owner: repo.owner,

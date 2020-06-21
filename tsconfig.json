@@ -20,10 +20,10 @@
   },
   "include": [
     "index.ts",
-    "config.ts",
+    "skill.ts",
     "bin/*.ts",
     "lib/**/*.ts",
-    "test/**/*.ts",
+    "test/**/*.ts"
   ],
   "exclude": [
     ".#*"
