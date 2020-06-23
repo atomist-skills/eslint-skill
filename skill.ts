@@ -14,10 +14,28 @@
  * limitations under the License.
  */
 
-import { LineStyle, parameter, ParameterType, ParameterVisibility, resourceProvider, skill } from "@atomist/skill";
+import {
+    Category,
+    LineStyle,
+    parameter,
+    ParameterType,
+    ParameterVisibility,
+    resourceProvider,
+    skill,
+} from "@atomist/skill";
 import { LintConfiguration } from "./lib/configuration";
 
 export const Skill = skill<LintConfiguration & { repos: any }>({
+    name: "eslint-skill",
+    namespace: "atomist",
+    displayName: "ESLint",
+    author: "Atomist",
+    categories: [Category.CodeReview],
+    license: "Apache-2.0",
+    homepageUrl: "https://github.com/atomist-skills/eslint-skill",
+    repositoryUrl: "https://github.com/atomist-skills/eslint-skill.git",
+    iconUrl: "file://docs/images/icon.svg",
+
     runtime: {
         memory: 2048,
         timeout: 540,
@@ -63,40 +81,17 @@ export const Skill = skill<LintConfiguration & { repos: any }>({
                 "Use this parameter to configure NPM packages like eslint itself or plugins that should get installed",
             required: false,
         },
-        push: {
-            type: ParameterType.SingleChoice,
-            displayName: "Fix Problems",
+        push: parameter.pushStrategy({
+            displayName: "Fix problems",
             description:
                 "Run ESLint with `--fix` option and determine how and when fixes should be committed back into the repository",
-            defaultValue: "pr_default_commit",
             options: [
-                {
-                    text: "Raise pull request for default branch; commit to other branches",
-                    value: "pr_default_commit",
-                },
-                {
-                    text: "Raise pull request for default branch only",
-                    value: "pr_default",
-                },
-                {
-                    text: "Raise pull request for any branch",
-                    value: "pr",
-                },
-                {
-                    text: "Commit to default branch only",
-                    value: "commit_default",
-                },
-                {
-                    text: "Commit to any branch",
-                    value: "commit",
-                },
                 {
                     text: "Do not apply fixes",
                     value: "none",
                 },
             ],
-            required: false,
-        },
+        }),
         commitMsg: {
             type: ParameterType.String,
             displayName: "Commit message",

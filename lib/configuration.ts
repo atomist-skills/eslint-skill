@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+import { parameter } from "@atomist/skill";
+
 export interface LintConfiguration {
     ignores?: string[];
     config?: string;
@@ -21,7 +23,7 @@ export interface LintConfiguration {
     commitMsg?: string;
     args?: string[];
     modules?: string[];
-    push?: "none" | "commit_default" | "commit" | "pr" | "pr_default" | "pr_default_commit";
+    push?: "none" & parameter.PushStrategy;
     labels?: string[];
 }
 

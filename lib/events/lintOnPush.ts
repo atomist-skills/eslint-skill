@@ -17,7 +17,6 @@
 import { EventContext, EventHandler, git, github, project, repository, runSteps, secret, Step } from "@atomist/skill";
 import { Severity } from "@atomist/skill-logging";
 import * as fs from "fs-extra";
-import * as _ from "lodash";
 import { DefaultLintConfiguration, LintConfiguration } from "../configuration";
 import { LintOnPushSubscription } from "../typings/types";
 
@@ -25,34 +24,12 @@ interface LintParameters {
     project: project.Project;
     credential: secret.GitHubCredential | secret.GitHubAppCredential;
     start: string;
-    checkId: number;
+    check: github.Check;
 }
 
 type LintStep = Step<EventContext<LintOnPushSubscription, LintConfiguration>, LintParameters>;
 
 const SetupStep: LintStep = {
-    name: "setup",
-    run: async (ctx, params) => {
-        const push = ctx.data.Push[0];
-        const repo = push.repo;
-        await ctx.audit.log(`Starting ESLint on ${repo.owner}/${repo.name}`);
-
-        params.start = new Date().toISOString();
-        params.credential = await ctx.credential.resolve(
-            secret.gitHubAppToken({
-                owner: repo.owner,
-                repo: repo.name,
-                apiUrl: repo.org.provider.apiUrl,
-            }),
-        );
-
-        return {
-            code: 0,
-        };
-    },
-};
-
-const CloneRepositoryStep: LintStep = {
     name: "clone repository",
     run: async (ctx, params) => {
         const push = ctx.data.Push[0];
@@ -65,6 +42,16 @@ const CloneRepositoryStep: LintStep = {
                 visibility: "hidden",
             };
         }
+
+        await ctx.audit.log(`Starting ESLint on ${repo.owner}/${repo.name}`);
+
+        params.credential = await ctx.credential.resolve(
+            secret.gitHubAppToken({
+                owner: repo.owner,
+                repo: repo.name,
+                apiUrl: repo.org.provider.apiUrl,
+            }),
+        );
 
         params.project = await ctx.project.clone(
             repository.gitHub({
@@ -101,23 +88,12 @@ const CloneRepositoryStep: LintStep = {
             };
         }
 
-        const api = github.api(params.project.id);
-        params.checkId = (
-            await api.checks.create({
-                owner: repo.owner,
-                repo: repo.name,
-                head_sha: push.after.sha,
-                status: "in_progress",
-                name: "eslint-skill",
-                external_id: ctx.correlationId,
-                details_url: ctx.audit.url,
-                started_at: params.start,
-                output: {
-                    title: "ESLint",
-                    summary: `Running \`eslint\``,
-                },
-            })
-        ).data.id;
+        params.check = await github.openCheck(ctx, params.project.id, {
+            sha: push.after.sha,
+            name: "eslint-skill",
+            title: "ESLint",
+            body: `Running \`eslint\``,
+        });
 
         return {
             code: 0,
@@ -252,28 +228,15 @@ const RunEslintStep: LintStep = {
             await fs.remove(file);
         }
 
-        const api = github.api(params.project.id);
         if (result.status === 0 && violations.length === 0) {
             const clean = (await git.status(params.project)).isClean;
             if (clean) {
                 await ctx.audit.log(`ESLint returned no errors or warnings`);
-                await api.checks.update({
-                    check_run_id: params.checkId,
-                    owner: repo.owner,
-                    repo: repo.name,
-                    head_sha: push.after.sha,
+                await params.check.update({
                     conclusion: "success",
-                    status: "completed",
-                    name: "eslint-skill",
-                    external_id: ctx.correlationId,
-                    started_at: params.start,
-                    completed_at: new Date().toISOString(),
-                    output: {
-                        title: "ESLint",
-                        summary: `Running \`eslint\` resulted in no warnings or errors.
+                    body: `Running \`eslint\` resulted in no warnings or errors.
 
 \`$ eslint ${argsString}\``,
-                    },
                 });
                 return {
                     code: 0,
@@ -281,23 +244,11 @@ const RunEslintStep: LintStep = {
                 };
             } else {
                 await ctx.audit.log(`ESLint fixed some errors or warnings`);
-                await api.checks.update({
-                    check_run_id: params.checkId,
-                    owner: repo.owner,
-                    repo: repo.name,
-                    head_sha: push.after.sha,
+                await params.check.update({
                     conclusion: "action_required",
-                    status: "completed",
-                    name: "eslint-skill",
-                    external_id: ctx.correlationId,
-                    started_at: params.start,
-                    completed_at: new Date().toISOString(),
-                    output: {
-                        title: "ESLint",
-                        summary: `Running \`eslint\` fixed some errors and warnings.
+                    body: `Running \`eslint\` fixed some errors and warnings.
 
 \`$ eslint ${argsString}\``,
-                    },
                 });
                 return {
                     code: 0,
@@ -305,92 +256,48 @@ const RunEslintStep: LintStep = {
                 };
             }
         } else if (result.status === 1 || violations.length > 0) {
-            const check = (
-                await api.checks.update({
-                    check_run_id: params.checkId,
-                    owner: repo.owner,
-                    repo: repo.name,
-                    head_sha: push.after.sha,
-                    conclusion: "action_required",
-                    status: "completed",
-                    name: "eslint-skill",
-                    external_id: ctx.correlationId,
-                    started_at: params.start,
-                    completed_at: new Date().toISOString(),
-                })
-            ).data;
-            const chunks = _.chunk(violations, 50);
-            for (const chunk of chunks) {
-                await api.checks.update({
-                    check_run_id: params.checkId,
-                    owner: repo.owner,
-                    repo: repo.name,
-                    output: {
-                        title: "ESLint",
-                        summary: `Running \`eslint\` resulted in warnings and/or errors.
+            await params.check.update({
+                conclusion: "action_required",
+                body: `Running \`eslint\` resulted in warnings and/or errors.
 
 \`$ eslint ${argsString}\``,
-                        annotations: chunk.map(r => ({
-                            annotation_level: r.severity === 1 ? "warning" : "failure",
-                            path: r.path,
-                            start_line: r.startLine,
-                            end_line: r.endLine || r.startLine,
-                            start_offset: r.startColumn,
-                            end_offset: r.endColumn || r.startColumn,
-                            message: `${r.message} (${r.rule})`,
-                        })),
-                    },
-                });
-            }
+                annotations: violations.map(r => ({
+                    annotationLevel: r.severity === 1 ? "warning" : "failure",
+                    path: r.path,
+                    startLine: r.startLine,
+                    endLine: r.endLine || r.startLine,
+                    startOffset: r.startColumn,
+                    endOffset: r.endColumn || r.startColumn,
+                    title: r.rule,
+                    message: r.message,
+                })),
+            });
+
             return {
                 code: 0,
-                reason: `ESLint raised [errors or warnings](${check.html_url}) on [${repo.owner}/${repo.name}](${repo.url})`,
+                reason: `ESLint raised [errors or warnings](${params.check.data.html_url}) on [${repo.owner}/${repo.name}](${repo.url})`,
             };
         } else if (result.status === 2) {
             await ctx.audit.log(`Running ESLint failed with configuration or internal error:`, Severity.ERROR);
             await ctx.audit.log(lines.join("\n"), Severity.ERROR);
-            await api.checks.update({
-                check_run_id: params.checkId,
-                owner: repo.owner,
-                repo: repo.name,
-                head_sha: push.after.sha,
+            await params.check.update({
                 conclusion: "action_required",
-                status: "completed",
-                name: "eslint-skill",
-                external_id: ctx.correlationId,
-                started_at: params.start,
-                completed_at: new Date().toISOString(),
-                output: {
-                    title: "ESLint",
-                    summary: `Running ESLint failed with a configuration error.
+                body: `Running ESLint failed with a configuration error.
 
 \`$ eslint ${argsString}\`
 
 \`\`\`
 ${lines.join("\n")}
 \`\`\``,
-                },
             });
             return {
                 code: 1,
                 reason: `Running ESLint failed with a configuration error`,
             };
         } else {
-            await api.checks.update({
-                check_run_id: params.checkId,
-                owner: repo.owner,
-                repo: repo.name,
-                head_sha: push.after.sha,
+            await params.check.update({
                 conclusion: "action_required",
-                status: "completed",
-                name: "eslint-skill",
-                external_id: ctx.correlationId,
-                started_at: params.start,
-                completed_at: new Date().toISOString(),
-                output: {
-                    title: "ESLint",
-                    summary: `Unknown ESLint exit code: \`${result.status}\``,
-                },
+                body: `Unknown ESLint exit code: \`${result.status}\``,
             });
             return {
                 code: 1,
@@ -415,104 +322,30 @@ const PushStep: LintStep = {
         const pushCfg = cfg.push;
         const push = ctx.data.Push[0];
         const repo = push.repo;
-        const commitMsg = cfg.commitMsg;
-        const branch = `eslint-${push.branch}`;
-        const commitOptions = {
-            name: push.after.author?.name,
-            email: push.after.author?.emails?.[0]?.address,
-        };
 
-        if (
-            pushCfg === "pr" ||
-            (push.branch === push.repo.defaultBranch && (pushCfg === "pr_default" || pushCfg === "pr_default_commit"))
-        ) {
-            const changedFiles = (await params.project.exec("git", ["diff", "--name-only"])).stdout
-                .split("\n")
-                .map(f => f.trim())
-                .filter(f => !!f && f.length > 0);
-            const body = `ESLint fixed warnings and/or errors in the following files:
-
-${changedFiles.map(f => ` * \`${f}\``).join("\n")}
-${github.formatMarkers(ctx)}
-`;
-            await git.createBranch(params.project, branch);
-            await git.commit(params.project, commitMsg, commitOptions);
-            await git.push(params.project, { force: true, branch });
-
-            try {
-                const api = github.api(params.project.id);
-                let pr;
-                const openPrs = (
-                    await api.pulls.list({
-                        owner: repo.owner,
-                        repo: repo.name,
-                        state: "open",
-                        base: push.branch,
-                        head: `${repo.owner}:${branch}`,
-                        per_page: 100,
-                    })
-                ).data;
-                if (openPrs.length === 1) {
-                    pr = openPrs[0];
-                    await api.pulls.update({
-                        owner: repo.owner,
-                        repo: repo.name,
-                        pull_number: pr.number,
-                        body,
-                    });
-                } else {
-                    pr = (
-                        await api.pulls.create({
-                            owner: repo.owner,
-                            repo: repo.name,
-                            title: "ESLint fixes",
-                            body,
-                            base: push.branch,
-                            head: branch,
-                        })
-                    ).data;
-                    if (cfg.labels?.length > 0) {
-                        await api.issues.update({
-                            owner: repo.owner,
-                            repo: repo.name,
-                            issue_number: pr.number,
-                            labels: cfg.labels,
-                        });
-                    }
-                }
-                await api.pulls.createReviewRequest({
-                    owner: repo.owner,
-                    repo: repo.name,
-                    pull_number: pr.number,
-                    reviewers: [push.after.author.login],
-                });
-                return {
-                    code: 0,
-                    reason: `Pushed ESLint fixes to [${repo.owner}/${repo.name}/${branch}](${repo.url}) and raised PR [#${pr.number}](${pr.html_url})`,
-                };
-            } catch (e) {
-                // This might fail if the PR already exists
-            }
-            return {
-                code: 0,
-                reason: `Pushed ESLint fixes to [${repo.owner}/${repo.name}/${branch}](${repo.url})`,
-            };
-        } else if (
-            pushCfg === "commit" ||
-            (push.branch === push.repo.defaultBranch && pushCfg === "commit_default") ||
-            (push.branch !== push.repo.defaultBranch && pushCfg === "pr_default_commit")
-        ) {
-            await git.commit(params.project, commitMsg, commitOptions);
-            await git.push(params.project);
-            return {
-                code: 0,
-                reason: `Pushed ESLint fixes to [${repo.owner}/${repo.name}/${push.branch}](${repo.url})`,
-            };
-        }
-        return {
-            code: 0,
-            reason: `Not pushed ESLint fixes because of configuration`,
-        };
+        return github.persistChanges(
+            ctx,
+            params.project,
+            pushCfg,
+            {
+                branch: push.branch,
+                defaultBranch: repo.defaultBranch,
+                author: {
+                    login: push.after.author?.login,
+                    name: push.after.author?.name,
+                    email: push.after.author?.emails?.[0]?.address,
+                },
+            },
+            {
+                branch: `eslint-${push.branch}`,
+                title: "ESLint fixes",
+                body: "ESLint fixed warnings and/or errors",
+                labels: cfg.labels,
+            },
+            {
+                message: cfg.commitMsg,
+            },
+        );
     },
 };
 
@@ -523,39 +356,13 @@ const ClosePrStep: LintStep = {
     },
     run: async (ctx, params) => {
         const push = ctx.data.Push[0];
-        const repo = push.repo;
-
-        const api = github.api(params.project.id);
-        const openPrs = (
-            await api.pulls.list({
-                owner: repo.owner,
-                repo: repo.name,
-                state: "open",
-                base: push.branch,
-                head: `${repo.owner}:eslint-${push.branch}`,
-                per_page: 100,
-            })
-        ).data;
-
-        for (const openPr of openPrs) {
-            await ctx.audit.log(
-                `Closing ESLint fix pull request [#${openPr.number}](${openPr.html_url}) because it is no longer needed`,
-            );
-            await api.issues.createComment({
-                owner: repo.owner,
-                repo: repo.name,
-                issue_number: openPr.number,
-                body: `Closing pull request because all fixable warnings and/or errors have been fixed in base branch
-${github.formatMarkers(ctx)}`,
-            });
-            await api.pulls.update({
-                owner: repo.owner,
-                repo: repo.name,
-                pull_number: openPr.number,
-                state: "closed",
-            });
-        }
-
+        await github.closePullRequests(
+            ctx,
+            params.project,
+            push.branch,
+            `eslint-${push.branch}`,
+            "Closing pull request because all fixable warnings and/or errors have been fixed in base branch",
+        );
         return {
             code: 0,
         };
@@ -565,14 +372,6 @@ ${github.formatMarkers(ctx)}`,
 export const handler: EventHandler<LintOnPushSubscription, LintConfiguration> = async ctx => {
     return runSteps({
         context: ctx,
-        steps: [
-            SetupStep,
-            CloneRepositoryStep,
-            NpmInstallStep,
-            ValidateRepositoryStep,
-            RunEslintStep,
-            ClosePrStep,
-            PushStep,
-        ],
+        steps: [SetupStep, NpmInstallStep, ValidateRepositoryStep, RunEslintStep, ClosePrStep, PushStep],
     });
 };
