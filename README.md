@@ -2,8 +2,7 @@
        
 <!---atomist-skill-description:start--->
 
-Find and fix problems in your JavaScript and TypeScript code, get pull
-requests with fixes.
+Fix problems in your JavaScript and TypeScript code, get pull requests
 
 <!---atomist-skill-description:end--->
 
