@@ -55,7 +55,7 @@ export const Skill = skill<LintConfiguration & { repos: any }>({
         },
         ignores: {
             type: ParameterType.StringArray,
-            displayName: "Ignore Pattern",
+            displayName: "Ignore pattern",
             description: "Pattern of files or folders to ignore during linting",
             required: false,
         },
