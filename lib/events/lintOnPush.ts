@@ -156,7 +156,7 @@ const RunEslintStep: LintStep = {
         const args: string[] = [];
         const reportFile = params.project.path(`eslintreport-${push.after.sha.slice(0, 7)}.json`);
         const configFile = params.project.path(`eslintrc-${push.after.sha.slice(0, 7)}.json`);
-        const ignoreFile = params.project.path(`eslintignore-${push.after.sha.slice(0, 7)}.json`);
+        const ignoreFile = params.project.path(`.eslintignore-${push.after.sha.slice(0, 7)}`);
         const filesToDelete = [reportFile];
 
         cfg.ext?.forEach(e => args.push("--ext", e));
