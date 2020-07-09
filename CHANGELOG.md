@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist-skills/eslint-skill/compare/1.0.4...HEAD)
 
+### Changed
+
+-   Set check to neutral when there are no actual errors. [20560a6](https://github.com/atomist-skills/eslint-skill/commit/20560a6fea29ab5170ad654abd76625dc307b014)
+
 ## [1.0.4](https://github.com/atomist-skills/eslint-skill/compare/1.0.3...1.0.4) - 2020-06-29
 
 ### Changed
