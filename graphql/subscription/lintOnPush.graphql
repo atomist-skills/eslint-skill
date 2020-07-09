@@ -1,27 +1,27 @@
 subscription lintOnPush {
-    Push {
-        after {
-            url
-            sha
-            author {
-                login
-                name
-                emails {
-                    address
-                }
-            }
+  Push {
+    after {
+      url
+      sha
+      author {
+        login
+        name
+        emails {
+          address
         }
-        branch
-        repo {
-            defaultBranch
-            url
-            owner
-            name
-            org {
-                provider {
-                    apiUrl
-                }
-            }
-        }
+      }
     }
+    branch
+    repo {
+      defaultBranch
+      url
+      owner
+      name
+      org {
+        provider {
+          apiUrl
+        }
+      }
+    }
+  }
 }
