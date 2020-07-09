@@ -257,7 +257,7 @@ const RunEslintStep: LintStep = {
             }
         } else if (result.status === 1 || violations.length > 0) {
             await params.check.update({
-                conclusion: "action_required",
+                conclusion: violations.some(v => v.severity === 2) ? "action_required" : "neutral",
                 body: `Running \`eslint\` resulted in warnings and/or errors.
 
 \`$ eslint ${argsString}\``,
