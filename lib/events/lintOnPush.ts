@@ -88,7 +88,7 @@ const SetupStep: LintStep = {
             };
         }
 
-        params.check = await github.openCheck(ctx, params.project.id, {
+        params.check = await github.createCheck(ctx, params.project.id, {
             sha: push.after.sha,
             name: "eslint-skill",
             title: "ESLint",
