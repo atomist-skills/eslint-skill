@@ -14,7 +14,18 @@
  * limitations under the License.
  */
 
-import { EventContext, EventHandler, git, github, project, repository, runSteps, secret, Step } from "@atomist/skill";
+import {
+    EventContext,
+    EventHandler,
+    git,
+    github,
+    project,
+    repository,
+    runSteps,
+    secret,
+    Step,
+    status,
+} from "@atomist/skill";
 import { Severity } from "@atomist/skill-logging";
 import * as fs from "fs-extra";
 import { DefaultLintConfiguration, LintConfiguration } from "../configuration";
@@ -35,12 +46,8 @@ const SetupStep: LintStep = {
         const push = ctx.data.Push[0];
         const repo = push.repo;
 
-        if (push.branch.startsWith("eslint-")) {
-            return {
-                code: 1,
-                reason: "Don't lint an eslint branch",
-                visibility: "hidden",
-            };
+        if (push.branch.startsWith("atomist/")) {
+            return status.failure(`Ignore generated branch`).hidden();
         }
 
         await ctx.audit.log(`Starting ESLint on ${repo.owner}/${repo.name}`);
@@ -337,7 +344,7 @@ const PushStep: LintStep = {
                 },
             },
             {
-                branch: `eslint-${push.branch}`,
+                branch: `atomist/eslint-${push.branch}`,
                 title: "ESLint fixes",
                 body: "ESLint fixed warnings and/or errors",
                 labels: cfg.labels,
@@ -360,7 +367,7 @@ const ClosePrStep: LintStep = {
             ctx,
             params.project,
             push.branch,
-            `eslint-${push.branch}`,
+            `atomist/eslint-${push.branch}`,
             "Closing pull request because all fixable warnings and/or errors have been fixed in base branch",
         );
         return {
