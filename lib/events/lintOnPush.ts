@@ -73,11 +73,7 @@ const SetupStep: LintStep = {
         await ctx.audit.log(`Cloned repository ${repo.owner}/${repo.name} at sha ${push.after.sha.slice(0, 7)}`);
 
         if (!(await fs.pathExists(params.project.path("package.json")))) {
-            return {
-                code: 1,
-                reason: "Project not an NPM project",
-                visibility: "hidden",
-            };
+            return status.failure("Project not an NPM project").hidden();
         }
 
         const includeGlobs = (ctx.configuration?.[0]?.parameters?.ext || [".js"])
@@ -88,11 +84,7 @@ const SetupStep: LintStep = {
             ignore: [".git", "node_modules", ...ignores],
         });
         if (matchingFiles.length === 0) {
-            return {
-                code: 1,
-                reason: "Project does not contain any matching files",
-                visibility: "hidden",
-            };
+            return status.failure("Project does not contain any matching files").hidden();
         }
 
         params.check = await github.createCheck(ctx, params.project.id, {
@@ -102,9 +94,7 @@ const SetupStep: LintStep = {
             body: `Running \`eslint\``,
         });
 
-        return {
-            code: 0,
-        };
+        return status.success();
     },
 };
 
@@ -124,9 +114,7 @@ const NpmInstallStep: LintStep = {
             await params.project.spawn("npm", ["install", ...cfg.modules, "--save-dev"], opts);
             await params.project.spawn("git", ["reset", "--hard"], opts);
         }
-        return {
-            code: 0,
-        };
+        return status.success();
     },
 };
 
@@ -137,16 +125,9 @@ const ValidateRepositoryStep: LintStep = {
         const repo = push.repo;
 
         if (!(await fs.pathExists(params.project.path("node_modules", ".bin", "eslint")))) {
-            return {
-                code: 1,
-                visibility: "hidden",
-                reason: `No ESLint installed in [${repo.owner}/${repo.name}](${repo.url})`,
-            };
-        } else {
-            return {
-                code: 0,
-            };
+            return status.failure(`No \`eslint\` installed in [${repo.owner}/${repo.name}](${repo.url})`);
         }
+        return status.success();
     },
 };
 
@@ -245,10 +226,9 @@ const RunEslintStep: LintStep = {
 
 \`$ eslint ${argsString}\``,
                 });
-                return {
-                    code: 0,
-                    reason: `ESLint returned no errors or warnings on [${repo.owner}/${repo.name}](${repo.url})`,
-                };
+                return status.success(
+                    `\`eslint\` returned no errors or warnings on [${repo.owner}/${repo.name}](${repo.url})`,
+                );
             } else {
                 await ctx.audit.log(`ESLint fixed some errors or warnings`);
                 await params.check.update({
@@ -257,10 +237,9 @@ const RunEslintStep: LintStep = {
 
 \`$ eslint ${argsString}\``,
                 });
-                return {
-                    code: 0,
-                    reason: `ESLint fixed some errors or warnings on [${repo.owner}/${repo.name}](${repo.url})`,
-                };
+                return status.success(
+                    `\`eslint\` fixed some errors or warnings on [${repo.owner}/${repo.name}](${repo.url})`,
+                );
             }
         } else if (result.status === 1 || violations.length > 0) {
             await params.check.update({
@@ -280,10 +259,9 @@ const RunEslintStep: LintStep = {
                 })),
             });
 
-            return {
-                code: 0,
-                reason: `ESLint raised [errors or warnings](${params.check.data.html_url}) on [${repo.owner}/${repo.name}](${repo.url})`,
-            };
+            return status.success(
+                `\`eslint\` raised [errors or warnings](${params.check.data.html_url}) on [${repo.owner}/${repo.name}](${repo.url})`,
+            );
         } else if (result.status === 2) {
             await ctx.audit.log(`Running ESLint failed with configuration or internal error:`, Severity.ERROR);
             await ctx.audit.log(lines.join("\n"), Severity.ERROR);
@@ -297,20 +275,13 @@ const RunEslintStep: LintStep = {
 ${lines.join("\n")}
 \`\`\``,
             });
-            return {
-                code: 1,
-                reason: `Running ESLint failed with a configuration error`,
-            };
+            return status.failure(`Running \`eslint\` failed with a configuration error`);
         } else {
             await params.check.update({
                 conclusion: "action_required",
                 body: `Unknown ESLint exit code: \`${result.status}\``,
             });
-            return {
-                code: 1,
-                visibility: "hidden",
-                reason: `Unknown ESLint exit code`,
-            };
+            return status.failure(`Unknown \`eslint\` exit code`).hidden();
         }
     },
 };
@@ -370,9 +341,7 @@ const ClosePrStep: LintStep = {
             `atomist/eslint-${push.branch}`,
             "Closing pull request because all fixable warnings and/or errors have been fixed in base branch",
         );
-        return {
-            code: 0,
-        };
+        return status.success();
     },
 };
 
