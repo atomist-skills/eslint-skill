@@ -55,11 +55,17 @@ const SetupStep: UpdateStep = {
 		const repo = push.repo;
 
 		if (push.branch !== push.repo.defaultBranch) {
-			return status.failure(`Ignore push to non-default branch`).hidden();
+			return status
+				.success(`Ignore push to non-default branch`)
+				.hidden()
+				.abort();
 		}
 
 		if (ctx.configuration?.[0]?.parameters?.configure === "none") {
-			return status.failure(`No configuration updates requested`).hidden();
+			return status
+				.success(`No configuration updates requested`)
+				.hidden()
+				.abort();
 		}
 
 		await ctx.audit.log(
@@ -91,7 +97,7 @@ const SetupStep: UpdateStep = {
 		);
 
 		if (!(await fs.pathExists(params.project.path("package.json")))) {
-			return status.failure("Project is not an npm project").hidden();
+			return status.success("Project is not an npm project").hidden().abort();
 		}
 
 		const includeGlobs = (ctx.configuration?.[0]?.parameters?.ext || [".js"])
@@ -107,8 +113,9 @@ const SetupStep: UpdateStep = {
 		);
 		if (matchingFiles.length === 0) {
 			return status
-				.failure("Project does not contain any matching files")
-				.hidden();
+				.success("Project does not contain any matching files")
+				.hidden()
+				.abort();
 		}
 
 		return status.success();
@@ -138,6 +145,8 @@ const NpmInstallStep: UpdateStep = {
 const ConfigureEslintStep: UpdateStep = {
 	name: "configure eslint",
 	run: async (ctx, params) => {
+		const push = ctx.data.Push[0];
+		const repo = push.repo;
 		const cfg: LintConfiguration = {
 			...DefaultLintConfiguration,
 			...ctx.configuration[0].parameters,
@@ -156,7 +165,15 @@ const ConfigureEslintStep: UpdateStep = {
 			await fs.writeFile(configFile, cfg.config);
 		}
 
-		return status.success();
+		if ((await git.status(params.project)).isClean) {
+			return status.success(
+				`No configuration updates in [${repo.owner}/${repo.name}](${repo.url})`,
+			);
+		} else {
+			return status.success(
+				`Updated configuration in [${repo.owner}/${repo.name}](${repo.url})`,
+			);
+		}
 	},
 };
 
@@ -166,6 +183,8 @@ const ConfigureHooksStep: UpdateStep = {
 		return ctx.configuration?.[0]?.parameters?.configure === "eslint_and_hook";
 	},
 	run: async (ctx, params) => {
+		const push = ctx.data.Push[0];
+		const repo = push.repo;
 		const cfg = ctx.configuration[0].parameters;
 		const opts = { env: { ...process.env, NODE_ENV: "development" } };
 
@@ -230,7 +249,15 @@ const ConfigureHooksStep: UpdateStep = {
 			spaces: 2,
 		});
 
-		return status.success();
+		if ((await git.status(params.project)).isClean) {
+			return status.success(
+				`No configuration updates in [${repo.owner}/${repo.name}](${repo.url})`,
+			);
+		} else {
+			return status.success(
+				`Updated configuration in [${repo.owner}/${repo.name}](${repo.url})`,
+			);
+		}
 	},
 };
 

@@ -55,7 +55,7 @@ const SetupStep: LintStep = {
 		const repo = push.repo;
 
 		if (push.branch.startsWith("atomist/")) {
-			return status.failure(`Ignore generated branch`).hidden();
+			return status.success(`Ignore generated branch`).hidden().abort();
 		}
 
 		await ctx.audit.log(`Starting ESLint on ${repo.owner}/${repo.name}`);
@@ -85,7 +85,7 @@ const SetupStep: LintStep = {
 		);
 
 		if (!(await fs.pathExists(params.project.path("package.json")))) {
-			return status.failure("Project not an npm project").hidden();
+			return status.success("Project not an npm project").hidden().abort();
 		}
 
 		const includeGlobs = (ctx.configuration?.[0]?.parameters?.ext || [".js"])
@@ -101,8 +101,9 @@ const SetupStep: LintStep = {
 		);
 		if (matchingFiles.length === 0) {
 			return status
-				.failure("Project does not contain any matching files")
-				.hidden();
+				.success("Project does not contain any matching files")
+				.hidden()
+				.abort();
 		}
 
 		params.check = await github.createCheck(ctx, params.project.id, {
@@ -309,9 +310,9 @@ const RunEslintStep: LintStep = {
 		} else if (result.status === 2) {
 			await ctx.audit.log(
 				`Running ESLint failed with configuration or internal error:`,
-				Severity.ERROR,
+				Severity.Error,
 			);
-			await ctx.audit.log(lines.join("\n"), Severity.ERROR);
+			await ctx.audit.log(lines.join("\n"), Severity.Error);
 			await params.check.update({
 				conclusion: "action_required",
 				body: `Running ESLint failed with a configuration error.
