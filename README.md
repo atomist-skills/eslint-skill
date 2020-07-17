@@ -135,8 +135,25 @@ integration is optional.
     Add additional labels to pull requests raised by this skill.
 
     This is useful to influence how and when the PR should be auto-merged by the
-    [Auto-merge Pull Request](https://go.atomist.com/catalog/skills/atomist/github-auto-merge-skill)
+    [Auto-Merge Pull Requests](https://go.atomist.com/catalog/skills/atomist/github-auto-merge-skill)
     skill.
+
+1. **Add ESLint configuration to repositories for local use**
+
+    Choose one of these options to add the ESLint configuration to your repositories, and optionally
+    enable [Git hooks](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks) to get support for
+    running ESLint locally with the same configuration.
+
+    If you choose to install the Git commit hooks, ESLint will be run on each local commit you make.
+
+    By default, the ESLint configuration will not be added to your repositories. Select one of these
+    options to change the behavior:
+
+    - **Update ESLint config, ignore files and install Git commit hooks** - the ESLint configuration
+      will be added to the repository, ignore files updated to ignore the prettier configuration added,
+      and the Git commit hook will be installed
+    - **Update ESLint config and ignore files** - the same behavior as above, without installing the
+      Git commit hook
 
 1. **Determine repository scope**
 
