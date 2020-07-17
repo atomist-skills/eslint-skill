@@ -246,7 +246,7 @@ This pull request configures support for applying ESLint linting rules on every 
                 labels: cfg.labels,
             },
             {
-                message: `Update ESLint repository configuration\n\n[atomist:generated]\n[atomist-skill:atomist/eslint-skill]`,
+                message: `Update ESLint repository configuration\n\n[atomist:generated]\n[atomist-skill:${ctx.skill.namespace}/${ctx.skill.name}]`,
             },
         );
     },
