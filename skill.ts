@@ -107,6 +107,27 @@ export const Skill = skill<LintConfiguration & { repos: any }>({
                 "Add additional labels to pull requests raised by this skill, e.g. to configure the [auto-merge](https://go.atomist.com/catalog/skills/atomist/github-auto-merge-skill) behavior.",
             required: false,
         },
+        configure: {
+            type: ParameterType.SingleChoice,
+            displayName: "Configure repositories",
+            description: "Update repositories to use the skill's ESLint configuration",
+            options: [
+                {
+                    text: "Update ESLint config, ignore files and install Git commit hooks",
+                    value: "eslint_and_hook",
+                },
+                {
+                    text: "Update ESLint config and ignore files",
+                    value: "eslint_only",
+                },
+                {
+                    text: "Don't configure ESLint",
+                    value: "none",
+                },
+            ],
+            defaultValue: "none",
+            required: false,
+        },
         repos: parameter.repoFilter(),
     },
 

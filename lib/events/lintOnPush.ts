@@ -28,7 +28,7 @@ import {
 } from "@atomist/skill";
 import { Severity } from "@atomist/skill-logging";
 import * as fs from "fs-extra";
-import { DefaultLintConfiguration, LintConfiguration } from "../configuration";
+import { DefaultLintConfiguration, LintConfiguration, NpmDevInstallArgs, NpmInstallArgs } from "../configuration";
 import { LintOnPushSubscription } from "../typings/types";
 
 interface LintParameters {
@@ -73,7 +73,7 @@ const SetupStep: LintStep = {
         await ctx.audit.log(`Cloned repository ${repo.owner}/${repo.name} at sha ${push.after.sha.slice(0, 7)}`);
 
         if (!(await fs.pathExists(params.project.path("package.json")))) {
-            return status.failure("Project not an NPM project").hidden();
+            return status.failure("Project not an npm project").hidden();
         }
 
         const includeGlobs = (ctx.configuration?.[0]?.parameters?.ext || [".js"])
@@ -103,15 +103,15 @@ const NpmInstallStep: LintStep = {
     run: async (ctx, params) => {
         const opts = { env: { ...process.env, NODE_ENV: "development" } };
         if (await fs.pathExists(params.project.path("package-lock.json"))) {
-            await params.project.spawn("npm", ["ci"], opts);
+            await params.project.spawn("npm", ["ci", ...NpmInstallArgs], opts);
         } else {
-            await params.project.spawn("npm", ["install"], opts);
+            await params.project.spawn("npm", ["install", ...NpmInstallArgs], opts);
         }
 
         const cfg = ctx.configuration[0].parameters;
         if (cfg.modules?.length > 0) {
-            await ctx.audit.log("Installing configured NPM packages");
-            await params.project.spawn("npm", ["install", ...cfg.modules, "--save-dev"], opts);
+            await ctx.audit.log("Installing configured npm packages");
+            await params.project.spawn("npm", ["install", ...cfg.modules, ...NpmDevInstallArgs], opts);
             await params.project.spawn("git", ["reset", "--hard"], opts);
         }
         return status.success();
@@ -143,7 +143,7 @@ const RunEslintStep: LintStep = {
         const cmd = params.project.path("node_modules", ".bin", "eslint");
         const args: string[] = [];
         const reportFile = params.project.path(`eslintreport-${push.after.sha.slice(0, 7)}.json`);
-        const configFile = params.project.path(`eslintrc-${push.after.sha.slice(0, 7)}.json`);
+        const configFile = params.project.path(`.eslintrc-${push.after.sha.slice(0, 7)}.json`);
         const ignoreFile = params.project.path(`.eslintignore-${push.after.sha.slice(0, 7)}`);
         const filesToDelete = [reportFile];
 

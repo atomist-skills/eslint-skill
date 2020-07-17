@@ -16,6 +16,9 @@
 
 import { parameter } from "@atomist/skill";
 
+export const NpmInstallArgs = ["--ignore-scripts", "--no-audit", "--no-fund"];
+export const NpmDevInstallArgs = ["--save-dev", ...NpmInstallArgs];
+
 export interface LintConfiguration {
     ignores?: string[];
     config?: string;
@@ -25,6 +28,7 @@ export interface LintConfiguration {
     modules?: string[];
     push?: "none" & parameter.PushStrategy;
     labels?: string[];
+    configure?: "eslint_only" | "eslint_and_hook" | "none";
 }
 
 export const DefaultLintConfiguration: LintConfiguration = {
