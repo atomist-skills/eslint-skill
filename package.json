@@ -32,7 +32,7 @@
     "supervisor": "^0.12.0",
     "ts-node": "^8.10.2",
     "typedoc": "^0.17.8",
-    "typescript": "^3.9.6"
+    "typescript": "^3.9.7"
   },
   "directories": {
     "test": "test"
@@ -64,7 +64,8 @@
     "skill:bundle": "atm-skill bundle --minify --source-map",
     "skill:package": "atm-skill package",
     "skill:register": "atm-skill register",
-    "atm:lint:prettier": "prettier --write"
+    "atm:lint:prettier": "prettier --write",
+    "atm:lint:eslint": "eslint --fix"
   },
   "husky": {
     "hooks": {
@@ -72,6 +73,7 @@
     }
   },
   "lint-staged": {
-    "**/*.@(graphql|json|markdown|yaml|yml|md)": "npm run atm:lint:prettier"
+    "**/*.@(graphql|json|markdown|yaml|yml|md)": "npm run atm:lint:prettier",
+    "**/*.ts": "npm run atm:lint:eslint"
   }
 }
