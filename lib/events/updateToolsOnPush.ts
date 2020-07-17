@@ -223,7 +223,7 @@ const PushStep: UpdateStep = {
 
 This pull request configures support for applying ESLint linting rules on every commit locally by using a Git pre-commit hook. The pre-commit hook will only format staged files. To apply the linting rules across your entire repository, run: 
 
-\`$ npm run atm:lint:eslint --- '${cfg.ext.map(e => `--ext ${e}`).join(" ")}'\``;
+\`$ npm run atm:lint:eslint --- ${cfg.ext.map(e => `--ext ${e}`).join(" ")} .\``;
         }
 
         return github.persistChanges(
