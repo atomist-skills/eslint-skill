@@ -20,19 +20,19 @@ export const NpmInstallArgs = ["--ignore-scripts", "--no-audit", "--no-fund"];
 export const NpmDevInstallArgs = ["--save-dev", ...NpmInstallArgs];
 
 export interface LintConfiguration {
-    ignores?: string[];
-    config?: string;
-    ext?: string[];
-    commitMsg?: string;
-    args?: string[];
-    modules?: string[];
-    push?: "none" & parameter.PushStrategy;
-    labels?: string[];
-    configure?: "eslint_only" | "eslint_and_hook" | "none";
+	ignores?: string[];
+	config?: string;
+	ext?: string[];
+	commitMsg?: string;
+	args?: string[];
+	modules?: string[];
+	push?: "none" & parameter.PushStrategy;
+	labels?: string[];
+	configure?: "eslint_only" | "eslint_and_hook" | "none";
 }
 
 export const DefaultLintConfiguration: LintConfiguration = {
-    ignores: ["node_modules"],
-    ext: [".js"],
-    commitMsg: `ESLint fixes\n\n[atomist:generated]\n[atomist-skill:atomist/eslint-skill]`,
+	ignores: ["node_modules"],
+	ext: [".js"],
+	commitMsg: `ESLint fixes\n\n[atomist:generated]\n[atomist-skill:atomist/eslint-skill]`,
 };
