@@ -15,264 +15,316 @@
  */
 
 import {
-    EventContext,
-    EventHandler,
-    git,
-    github,
-    project,
-    repository,
-    runSteps,
-    secret,
-    status,
-    Step,
+	EventContext,
+	EventHandler,
+	git,
+	github,
+	project,
+	repository,
+	runSteps,
+	secret,
+	status,
+	Step,
 } from "@atomist/skill";
 import * as fs from "fs-extra";
-import { DefaultLintConfiguration, LintConfiguration, NpmDevInstallArgs } from "../configuration";
-import { LintOnPushSubscription, UpdateToolsOnPushSubscription } from "../typings/types";
+import {
+	DefaultLintConfiguration,
+	LintConfiguration,
+	NpmDevInstallArgs,
+} from "../configuration";
+import {
+	LintOnPushSubscription,
+	UpdateToolsOnPushSubscription,
+} from "../typings/types";
 import * as _ from "lodash";
 
 interface UpdateParameters {
-    project: project.Project;
-    credential: secret.GitHubCredential | secret.GitHubAppCredential;
+	project: project.Project;
+	credential: secret.GitHubCredential | secret.GitHubAppCredential;
 }
 
-type UpdateStep = Step<EventContext<UpdateToolsOnPushSubscription, LintConfiguration>, UpdateParameters>;
+type UpdateStep = Step<
+	EventContext<UpdateToolsOnPushSubscription, LintConfiguration>,
+	UpdateParameters
+>;
 
 const SetupStep: UpdateStep = {
-    name: "clone repository",
-    run: async (ctx, params) => {
-        const push = ctx.data.Push[0];
-        const repo = push.repo;
+	name: "clone repository",
+	run: async (ctx, params) => {
+		const push = ctx.data.Push[0];
+		const repo = push.repo;
 
-        if (push.branch !== push.repo.defaultBranch) {
-            return status.failure(`Ignore push to non-default branch`).hidden();
-        }
+		if (push.branch !== push.repo.defaultBranch) {
+			return status.failure(`Ignore push to non-default branch`).hidden();
+		}
 
-        if (ctx.configuration?.[0]?.parameters?.configure === "none") {
-            return status.failure(`No configuration updates requested`).hidden();
-        }
+		if (ctx.configuration?.[0]?.parameters?.configure === "none") {
+			return status.failure(`No configuration updates requested`).hidden();
+		}
 
-        await ctx.audit.log(`Updating ESLint configuration on ${repo.owner}/${repo.name}`);
+		await ctx.audit.log(
+			`Updating ESLint configuration on ${repo.owner}/${repo.name}`,
+		);
 
-        params.credential = await ctx.credential.resolve(
-            secret.gitHubAppToken({
-                owner: repo.owner,
-                repo: repo.name,
-                apiUrl: repo.org.provider.apiUrl,
-            }),
-        );
+		params.credential = await ctx.credential.resolve(
+			secret.gitHubAppToken({
+				owner: repo.owner,
+				repo: repo.name,
+				apiUrl: repo.org.provider.apiUrl,
+			}),
+		);
 
-        params.project = await ctx.project.clone(
-            repository.gitHub({
-                owner: repo.owner,
-                repo: repo.name,
-                credential: params.credential,
-                branch: push.branch,
-                sha: push.after.sha,
-            }),
-            { alwaysDeep: false, detachHead: false },
-        );
-        await ctx.audit.log(`Cloned repository ${repo.owner}/${repo.name} at sha ${push.after.sha.slice(0, 7)}`);
+		params.project = await ctx.project.clone(
+			repository.gitHub({
+				owner: repo.owner,
+				repo: repo.name,
+				credential: params.credential,
+				branch: push.branch,
+				sha: push.after.sha,
+			}),
+			{ alwaysDeep: false, detachHead: false },
+		);
+		await ctx.audit.log(
+			`Cloned repository ${repo.owner}/${
+				repo.name
+			} at sha ${push.after.sha.slice(0, 7)}`,
+		);
 
-        if (!(await fs.pathExists(params.project.path("package.json")))) {
-            return status.failure("Project is not an npm project").hidden();
-        }
+		if (!(await fs.pathExists(params.project.path("package.json")))) {
+			return status.failure("Project is not an npm project").hidden();
+		}
 
-        const includeGlobs = (ctx.configuration?.[0]?.parameters?.ext || [".js"])
-            .map(e => (!e.startsWith(".") ? `.${e}` : e))
-            .map(e => `**/*${e}`);
-        const ignores = ctx.configuration?.[0]?.parameters?.ignores || [];
-        const matchingFiles = await project.globFiles(params.project, includeGlobs, {
-            ignore: [".git", "node_modules", ...ignores],
-        });
-        if (matchingFiles.length === 0) {
-            return status.failure("Project does not contain any matching files").hidden();
-        }
+		const includeGlobs = (ctx.configuration?.[0]?.parameters?.ext || [".js"])
+			.map(e => (!e.startsWith(".") ? `.${e}` : e))
+			.map(e => `**/*${e}`);
+		const ignores = ctx.configuration?.[0]?.parameters?.ignores || [];
+		const matchingFiles = await project.globFiles(
+			params.project,
+			includeGlobs,
+			{
+				ignore: [".git", "node_modules", ...ignores],
+			},
+		);
+		if (matchingFiles.length === 0) {
+			return status
+				.failure("Project does not contain any matching files")
+				.hidden();
+		}
 
-        return status.success();
-    },
+		return status.success();
+	},
 };
 
 const NpmInstallStep: UpdateStep = {
-    name: "npm install",
-    runWhen: async (ctx, params) => {
-        return ctx.configuration?.[0]?.parameters?.modules?.length > 0;
-    },
-    run: async (ctx, params) => {
-        const opts = { env: { ...process.env, NODE_ENV: "development" } };
+	name: "npm install",
+	runWhen: async (ctx, params) => {
+		return ctx.configuration?.[0]?.parameters?.modules?.length > 0;
+	},
+	run: async (ctx, params) => {
+		const opts = { env: { ...process.env, NODE_ENV: "development" } };
 
-        const cfg = ctx.configuration[0].parameters;
-        await ctx.audit.log("Installing configured npm packages");
-        await params.project.spawn("npm", ["install", ...cfg.modules, ...NpmDevInstallArgs], opts);
+		const cfg = ctx.configuration[0].parameters;
+		await ctx.audit.log("Installing configured npm packages");
+		await params.project.spawn(
+			"npm",
+			["install", ...cfg.modules, ...NpmDevInstallArgs],
+			opts,
+		);
 
-        return status.success();
-    },
+		return status.success();
+	},
 };
 
 const ConfigureEslintStep: UpdateStep = {
-    name: "configure eslint",
-    run: async (ctx, params) => {
-        const cfg: LintConfiguration = {
-            ...DefaultLintConfiguration,
-            ...ctx.configuration[0].parameters,
-        };
+	name: "configure eslint",
+	run: async (ctx, params) => {
+		const cfg: LintConfiguration = {
+			...DefaultLintConfiguration,
+			...ctx.configuration[0].parameters,
+		};
 
-        const configFile = params.project.path(`.eslintrc.json`);
-        const ignoreFile = params.project.path(`.eslintignore`);
+		const configFile = params.project.path(`.eslintrc.json`);
+		const ignoreFile = params.project.path(`.eslintignore`);
 
-        // Add .eslintignore
-        if (cfg.ignores) {
-            await fs.writeFile(ignoreFile, `${cfg.ignores.join("\n")}\n`);
-        }
+		// Add .eslintignore
+		if (cfg.ignores) {
+			await fs.writeFile(ignoreFile, `${cfg.ignores.join("\n")}\n`);
+		}
 
-        // Add .eslintrc.json
-        if (cfg.config) {
-            await fs.writeFile(configFile, cfg.config);
-        }
+		// Add .eslintrc.json
+		if (cfg.config) {
+			await fs.writeFile(configFile, cfg.config);
+		}
 
-        return status.success();
-    },
+		return status.success();
+	},
 };
 
 const ConfigureHooksStep: UpdateStep = {
-    name: "configure hooks",
-    runWhen: async (ctx, params) => {
-        return ctx.configuration?.[0]?.parameters?.configure === "eslint_and_hook";
-    },
-    run: async (ctx, params) => {
-        const cfg = ctx.configuration[0].parameters;
-        const opts = { env: { ...process.env, NODE_ENV: "development" } };
+	name: "configure hooks",
+	runWhen: async (ctx, params) => {
+		return ctx.configuration?.[0]?.parameters?.configure === "eslint_and_hook";
+	},
+	run: async (ctx, params) => {
+		const cfg = ctx.configuration[0].parameters;
+		const opts = { env: { ...process.env, NODE_ENV: "development" } };
 
-        let pj = await fs.readJson(params.project.path("package.json"));
+		let pj = await fs.readJson(params.project.path("package.json"));
 
-        const modules = [];
-        if (!pj.devDependencies?.eslint) {
-            modules.push("eslint");
-        }
-        if (!pj.devDependencies?.husky) {
-            modules.push("husky");
-        }
-        if (!pj.devDependencies?.["lint-staged"]) {
-            modules.push("lint-staged");
-        }
-        if (modules.length > 0) {
-            await params.project.spawn("npm", ["install", ...modules, ...NpmDevInstallArgs], opts);
-        }
+		const modules = [];
+		if (!pj.devDependencies?.eslint) {
+			modules.push("eslint");
+		}
+		if (!pj.devDependencies?.husky) {
+			modules.push("husky");
+		}
+		if (!pj.devDependencies?.["lint-staged"]) {
+			modules.push("lint-staged");
+		}
+		if (modules.length > 0) {
+			await params.project.spawn(
+				"npm",
+				["install", ...modules, ...NpmDevInstallArgs],
+				opts,
+			);
+		}
 
-        pj = await fs.readJson(params.project.path("package.json"));
+		pj = await fs.readJson(params.project.path("package.json"));
 
-        // Add npm script to run eslint
-        const script = `atm:lint:eslint`;
+		// Add npm script to run eslint
+		const script = `atm:lint:eslint`;
 
-        const args = ["--fix"];
-        cfg.args?.forEach(a => args.push(a));
-        _.set(pj, `scripts.${script}`, `eslint ${_.uniq(args)}`);
+		const args = ["--fix"];
+		cfg.args?.forEach(a => args.push(a));
+		_.set(pj, `scripts.${script}`, `eslint ${_.uniq(args)}`);
 
-        // Add husky configuration
-        if (!pj.husky?.["hooks"]?.["pre-commit"]) {
-            _.set(pj, "husky.hooks.pre-commit", "lint-staged");
-        } else if (!pj.husky.hooks["pre-commit"].includes("lint-staged")) {
-            pj.husky.hooks["pre-commit"] = `${pj.husky["pre-commit"]} && lint-staged`;
-        }
+		// Add husky configuration
+		if (!pj.husky?.["hooks"]?.["pre-commit"]) {
+			_.set(pj, "husky.hooks.pre-commit", "lint-staged");
+		} else if (!pj.husky.hooks["pre-commit"].includes("lint-staged")) {
+			pj.husky.hooks["pre-commit"] = `${pj.husky["pre-commit"]} && lint-staged`;
+		}
 
-        // Add lint-staged configuration
-        const globs = (ctx.configuration?.[0]?.parameters?.ext || [".js"])
-            .map(e => (!e.startsWith(".") ? `.${e}` : e))
-            .map(e => `**/*${e}`);
-        if (pj["lint-staged"]) {
-            // First attempt to delete the previous globs
-            for (const g in pj["lint-staged"]) {
-                if (pj["lint-staged"][g] === `npm run ${script}`) {
-                    delete pj["lint-staged"][g];
-                }
-            }
-        } else {
-            pj["lint-staged"] = {};
-        }
-        // Now install the new version
-        globs.forEach(g => (pj["lint-staged"][g] = `npm run ${script}`));
+		// Add lint-staged configuration
+		let globs = (ctx.configuration?.[0]?.parameters?.ext || [".js"])
+			.map(e => (!e.startsWith(".") ? `.${e}` : e))
+			.map(e => `**/*${e}`);
+		if (pj["lint-staged"]) {
+			// First attempt to delete the previous globs
+			for (const g in pj["lint-staged"]) {
+				if (pj["lint-staged"][g] === `npm run ${script}`) {
+					if (globs.includes(g)) {
+						globs = globs.filter(glob => g !== glob);
+					} else {
+						delete pj["lint-staged"][g];
+					}
+				}
+			}
+		} else {
+			pj["lint-staged"] = {};
+		}
+		// Now install the new version
+		globs.forEach(g => (pj["lint-staged"][g] = `npm run ${script}`));
 
-        await fs.writeJson(params.project.path("package.json"), pj, {
-            spaces: 2,
-        });
+		await fs.writeJson(params.project.path("package.json"), pj, {
+			spaces: 2,
+		});
 
-        return status.success();
-    },
+		return status.success();
+	},
 };
 
 const PushStep: UpdateStep = {
-    name: "push",
-    runWhen: async (ctx, params) => {
-        const pushCfg = ctx.configuration[0]?.parameters?.push;
-        return !!pushCfg && pushCfg !== "none" && !(await git.status(params.project)).isClean;
-    },
-    run: async (ctx, params) => {
-        const cfg: LintConfiguration = {
-            ...DefaultLintConfiguration,
-            ...ctx.configuration[0].parameters,
-        };
-        const push = ctx.data.Push[0];
-        const repo = push.repo;
+	name: "push",
+	runWhen: async (ctx, params) => {
+		const pushCfg = ctx.configuration[0]?.parameters?.push;
+		return (
+			!!pushCfg &&
+			pushCfg !== "none" &&
+			!(await git.status(params.project)).isClean
+		);
+	},
+	run: async (ctx, params) => {
+		const cfg: LintConfiguration = {
+			...DefaultLintConfiguration,
+			...ctx.configuration[0].parameters,
+		};
+		const push = ctx.data.Push[0];
+		const repo = push.repo;
 
-        let body = `Update ESLint repository configuration to [skill configuration](https://go.atomist.com/${
-            ctx.workspaceId
-        }/manage/skills/configure/${ctx.skill.id}/${encodeURIComponent(ctx.configuration[0].name)}).`;
+		let body = `Update ESLint repository configuration to [skill configuration](https://go.atomist.com/${
+			ctx.workspaceId
+		}/manage/skills/configure/${ctx.skill.id}/${encodeURIComponent(
+			ctx.configuration[0].name,
+		)}).`;
 
-        if (ctx.configuration?.[0]?.parameters?.configure === "eslint_and_hook") {
-            body = `${body}
+		if (ctx.configuration?.[0]?.parameters?.configure === "eslint_and_hook") {
+			body = `${body}
 
 This pull request configures support for applying ESLint linting rules on every commit locally by using a Git pre-commit hook. The pre-commit hook will only format staged files. To apply the linting rules across your entire repository, run: 
 
-\`$ npm run atm:lint:eslint --- ${cfg.ext.map(e => `--ext ${e}`).join(" ")} .\``;
-        }
+\`$ npm run atm:lint:eslint --- ${cfg.ext
+				.map(e => `--ext ${e}`)
+				.join(" ")} .\``;
+		}
 
-        return github.persistChanges(
-            ctx,
-            params.project,
-            "pr_default",
-            {
-                branch: push.branch,
-                defaultBranch: repo.defaultBranch,
-                author: {
-                    login: push.after.author?.login,
-                    name: push.after.author?.name,
-                    email: push.after.author?.emails?.[0]?.address,
-                },
-            },
-            {
-                branch: `atomist/eslint-config-${push.branch}`,
-                title: "Update ESLint configuration",
-                body,
-                labels: cfg.labels,
-            },
-            {
-                message: `Update ESLint repository configuration\n\n[atomist:generated]\n[atomist-skill:${ctx.skill.namespace}/${ctx.skill.name}]`,
-            },
-        );
-    },
+		return github.persistChanges(
+			ctx,
+			params.project,
+			"pr_default",
+			{
+				branch: push.branch,
+				defaultBranch: repo.defaultBranch,
+				author: {
+					login: push.after.author?.login,
+					name: push.after.author?.name,
+					email: push.after.author?.emails?.[0]?.address,
+				},
+			},
+			{
+				branch: `atomist/eslint-config-${push.branch}`,
+				title: "Update ESLint configuration",
+				body,
+				labels: cfg.labels,
+			},
+			{
+				message: `Update ESLint repository configuration\n\n[atomist:generated]\n[atomist-skill:${ctx.skill.namespace}/${ctx.skill.name}]`,
+			},
+		);
+	},
 };
 
 const ClosePrStep: UpdateStep = {
-    name: "close pr",
-    runWhen: async (ctx, params) => {
-        return (await git.status(params.project)).isClean;
-    },
-    run: async (ctx, params) => {
-        const push = ctx.data.Push[0];
-        await github.closePullRequests(
-            ctx,
-            params.project,
-            push.branch,
-            `atomist/eslint-config-${push.branch}`,
-            "Closing pull request because configuration has been updated in base branch",
-        );
-        return status.success();
-    },
+	name: "close pr",
+	runWhen: async (ctx, params) => {
+		return (await git.status(params.project)).isClean;
+	},
+	run: async (ctx, params) => {
+		const push = ctx.data.Push[0];
+		await github.closePullRequests(
+			ctx,
+			params.project,
+			push.branch,
+			`atomist/eslint-config-${push.branch}`,
+			"Closing pull request because configuration has been updated in base branch",
+		);
+		return status.success();
+	},
 };
 
-export const handler: EventHandler<LintOnPushSubscription, LintConfiguration> = async ctx => {
-    return runSteps({
-        context: ctx,
-        steps: [SetupStep, NpmInstallStep, ConfigureEslintStep, ConfigureHooksStep, ClosePrStep, PushStep],
-    });
+export const handler: EventHandler<
+	LintOnPushSubscription,
+	LintConfiguration
+> = async ctx => {
+	return runSteps({
+		context: ctx,
+		steps: [
+			SetupStep,
+			NpmInstallStep,
+			ConfigureEslintStep,
+			ConfigureHooksStep,
+			ClosePrStep,
+			PushStep,
+		],
+	});
 };
