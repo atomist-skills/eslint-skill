@@ -1,2 +1,2 @@
 *.d.ts
-/lib/typings/types.ts
+**/typings/types.ts
