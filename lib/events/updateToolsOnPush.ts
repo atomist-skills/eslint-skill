@@ -78,6 +78,17 @@ const SetupStep: UpdateStep = {
             return status.failure("Project is not an npm project").hidden();
         }
 
+        const includeGlobs = (ctx.configuration?.[0]?.parameters?.ext || [".js"])
+            .map(e => (!e.startsWith(".") ? `.${e}` : e))
+            .map(e => `**/*${e}`);
+        const ignores = ctx.configuration?.[0]?.parameters?.ignores || [];
+        const matchingFiles = await project.globFiles(params.project, includeGlobs, {
+            ignore: [".git", "node_modules", ...ignores],
+        });
+        if (matchingFiles.length === 0) {
+            return status.failure("Project does not contain any matching files").hidden();
+        }
+
         return status.success();
     },
 };
