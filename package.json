@@ -73,7 +73,7 @@
     }
   },
   "lint-staged": {
-    "**/*.@(graphql|json|markdown|yaml|yml|md)": "npm run atm:lint:prettier",
-    "**/*.ts": "npm run atm:lint:eslint"
+    "**/*.ts": "npm run atm:lint:eslint",
+    "**/*.@(graphql|json|markdown|yaml|yml|md)": "npm run atm:lint:prettier"
   }
 }
