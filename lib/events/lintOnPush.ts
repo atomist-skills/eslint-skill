@@ -85,10 +85,15 @@ const SetupStep: LintStep = {
 		);
 
 		if (!(await fs.pathExists(params.project.path("package.json")))) {
-			return status.success("Project not an npm project").hidden().abort();
+			return status
+				.success("Project not an npm project")
+				.hidden()
+				.abort();
 		}
 
-		const includeGlobs = (ctx.configuration?.[0]?.parameters?.ext || [".js"])
+		const includeGlobs = (
+			ctx.configuration?.[0]?.parameters?.ext || [".js"]
+		)
 			.map(e => (!e.startsWith(".") ? `.${e}` : e))
 			.map(e => `**/*${e}`);
 		const ignores = ctx.configuration?.[0]?.parameters?.ignores || [];
@@ -124,7 +129,11 @@ const NpmInstallStep: LintStep = {
 		if (await fs.pathExists(params.project.path("package-lock.json"))) {
 			await params.project.spawn("npm", ["ci", ...NpmInstallArgs], opts);
 		} else {
-			await params.project.spawn("npm", ["install", ...NpmInstallArgs], opts);
+			await params.project.spawn(
+				"npm",
+				["install", ...NpmInstallArgs],
+				opts,
+			);
 		}
 
 		const cfg = ctx.configuration[0].parameters;
