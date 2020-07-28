@@ -97,10 +97,15 @@ const SetupStep: UpdateStep = {
 		);
 
 		if (!(await fs.pathExists(params.project.path("package.json")))) {
-			return status.success("Project is not an npm project").hidden().abort();
+			return status
+				.success("Project is not an npm project")
+				.hidden()
+				.abort();
 		}
 
-		const includeGlobs = (ctx.configuration?.[0]?.parameters?.ext || [".js"])
+		const includeGlobs = (
+			ctx.configuration?.[0]?.parameters?.ext || [".js"]
+		)
 			.map(e => (!e.startsWith(".") ? `.${e}` : e))
 			.map(e => `**/*${e}`);
 		const ignores = ctx.configuration?.[0]?.parameters?.ignores || [];
@@ -180,7 +185,9 @@ const ConfigureEslintStep: UpdateStep = {
 const ConfigureHooksStep: UpdateStep = {
 	name: "configure hooks",
 	runWhen: async (ctx, params) => {
-		return ctx.configuration?.[0]?.parameters?.configure === "eslint_and_hook";
+		return (
+			ctx.configuration?.[0]?.parameters?.configure === "eslint_and_hook"
+		);
 	},
 	run: async (ctx, params) => {
 		const push = ctx.data.Push[0];
@@ -221,7 +228,9 @@ const ConfigureHooksStep: UpdateStep = {
 		if (!pj.husky?.["hooks"]?.["pre-commit"]) {
 			_.set(pj, "husky.hooks.pre-commit", "lint-staged");
 		} else if (!pj.husky.hooks["pre-commit"].includes("lint-staged")) {
-			pj.husky.hooks["pre-commit"] = `${pj.husky["pre-commit"]} && lint-staged`;
+			pj.husky.hooks[
+				"pre-commit"
+			] = `${pj.husky["pre-commit"]} && lint-staged`;
 		}
 
 		// Add lint-staged configuration
@@ -285,7 +294,9 @@ const PushStep: UpdateStep = {
 			ctx.configuration[0].name,
 		)}).`;
 
-		if (ctx.configuration?.[0]?.parameters?.configure === "eslint_and_hook") {
+		if (
+			ctx.configuration?.[0]?.parameters?.configure === "eslint_and_hook"
+		) {
 			body = `${body}
 
 This pull request configures support for applying ESLint linting rules on every commit locally by using a Git pre-commit hook. The pre-commit hook will only format staged files. To apply the linting rules across your entire repository, run: 
