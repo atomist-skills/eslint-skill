@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist-skills/eslint-skill/compare/1.0.6...HEAD)
 
+### Changed
+
+-   Update category. [83eb245](https://github.com/atomist-skills/eslint-skill/commit/83eb24520c59141ff1ce55b99a4743b45b57149a)
+
 ## [1.0.6](https://github.com/atomist-skills/eslint-skill/compare/1.0.5...1.0.6) - 2020-07-17
 
 ### Added
