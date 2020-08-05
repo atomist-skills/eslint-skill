@@ -32,7 +32,7 @@ export interface LintConfiguration {
 }
 
 export const DefaultLintConfiguration: LintConfiguration = {
-	ignores: ["node_modules"],
+	ignores: [],
 	ext: [".js"],
 	commitMsg: `ESLint fixes\n\n[atomist:generated]\n[atomist-skill:atomist/eslint-skill]`,
 };
