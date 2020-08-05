@@ -76,9 +76,9 @@ export const Skill = skill<LintConfiguration & { repos: any }>({
 		},
 		modules: {
 			type: ParameterType.StringArray,
-			displayName: "NPM packages to install",
+			displayName: "npm packages to install",
 			description:
-				"Use this parameter to configure NPM packages like eslint itself or plugins that should get installed",
+				"Use this parameter to configure npm packages like eslint itself or plugins that should get installed",
 			required: false,
 		},
 		push: parameter.pushStrategy({
