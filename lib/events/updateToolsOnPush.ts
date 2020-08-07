@@ -277,7 +277,8 @@ const PushStep: UpdateStep = {
 		return (
 			!!pushCfg &&
 			pushCfg !== "none" &&
-			!(await git.status(params.project)).isClean
+			!(await git.status(params.project)).isClean &&
+			!(await onlyPackageLockChanged(params.project))
 		);
 	},
 	run: async (ctx, params) => {
@@ -335,7 +336,10 @@ This pull request configures support for applying ESLint linting rules on every 
 const ClosePrStep: UpdateStep = {
 	name: "close pr",
 	runWhen: async (ctx, params) => {
-		return (await git.status(params.project)).isClean;
+		return (
+			(await git.status(params.project)).isClean ||
+			(await onlyPackageLockChanged(params.project))
+		);
 	},
 	run: async (ctx, params) => {
 		const push = ctx.data.Push[0];
@@ -365,3 +369,8 @@ export const handler: EventHandler<
 			PushStep,
 		],
 	});
+
+async function onlyPackageLockChanged(p: project.Project): Promise<boolean> {
+	const files = await git.changedFiles(p);
+	return files.length === 1 && files[0] === "package-lock.json";
+}
