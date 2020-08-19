@@ -32,9 +32,6 @@ export const Skill = skill<LintConfiguration & { repos: any }>({
 	author: "Atomist",
 	categories: [Category.CodeQuality],
 	license: "Apache-2.0",
-	homepageUrl: "https://github.com/atomist-skills/eslint-skill",
-	repositoryUrl: "https://github.com/atomist-skills/eslint-skill.git",
-	iconUrl: "file://docs/images/icon.svg",
 
 	runtime: {
 		memory: 2048,
@@ -133,6 +130,4 @@ export const Skill = skill<LintConfiguration & { repos: any }>({
 		},
 		repos: parameter.repoFilter(),
 	},
-
-	subscriptions: ["file://graphql/subscription/*.graphql"],
 });
