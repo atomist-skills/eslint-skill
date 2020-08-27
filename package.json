@@ -61,7 +61,7 @@
     "skill": "run-s compile test skill:generate skill:bundle skill:package",
     "skill:generate": "atm-skill generate",
     "skill:clean": "atm-skill clean",
-    "skill:bundle": "atm-skill bundle --minify --source-map",
+    "skill:bundle": "atm-skill bundle --no-minify --no-source-map",
     "skill:package": "atm-skill package",
     "skill:register": "atm-skill register",
     "atm:lint:prettier": "prettier --write",
