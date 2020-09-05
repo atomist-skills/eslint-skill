@@ -16,7 +16,7 @@ This page details all runtime dependencies of `@atomist/eslint-skill`.
 | [GPL-3.0](#gpl-30)            | 1     |
 | [ISC](#isc)                   | 32    |
 | [MIT AND Zlib](#mit-and-zlib) | 1     |
-| [MIT](#mit)                   | 208   |
+| [MIT](#mit)                   | 209   |
 
 #### Apache-2.0
 
@@ -25,7 +25,7 @@ Apache License 2.0 - [http://www.apache.org/licenses/LICENSE-2.0](http://www.apa
 | Name                                  | Version                       | Publisher             | Repository                                                                                                                       |
 | ------------------------------------- | ----------------------------- | --------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
 | `@atomist/skill-logging`              | `0.1.1-9`                     | Atomist               | [https://github.com/atomist-skills/skill-logging](https://github.com/atomist-skills/skill-logging)                               |
-| `@atomist/skill`                      | `0.1.1-92`                    | Atomist               | [https://github.com/atomist-skills/skill](https://github.com/atomist-skills/skill)                                               |
+| `@atomist/skill`                      | `0.1.1-100`                   | Atomist               | [https://github.com/atomist-skills/skill](https://github.com/atomist-skills/skill)                                               |
 | `@atomist/slack-messages`             | `1.2.0-master.20200806132057` | Atomist               | [https://github.com/atomist/slack-messages](https://github.com/atomist/slack-messages)                                           |
 | `@google-cloud/common`                | `2.4.0`                       | Google Inc.           | [https://github.com/googleapis/nodejs-common](https://github.com/googleapis/nodejs-common)                                       |
 | `@google-cloud/common`                | `3.3.3`                       | Google Inc.           | [https://github.com/googleapis/nodejs-common](https://github.com/googleapis/nodejs-common)                                       |
@@ -318,6 +318,7 @@ MIT License - [https://opensource.org/licenses/MIT](https://opensource.org/licen
 | `mimic-fn`                              | `2.1.0`    | Sindre Sorhus       | [https://github.com/sindresorhus/mimic-fn](https://github.com/sindresorhus/mimic-fn)                                                           |
 | `ms`                                    | `2.1.2`    |                     | [https://github.com/zeit/ms](https://github.com/zeit/ms)                                                                                       |
 | `node-fetch`                            | `2.6.0`    | David Frank         | [https://github.com/bitinn/node-fetch](https://github.com/bitinn/node-fetch)                                                                   |
+| `node-fetch`                            | `2.6.1`    | David Frank         | [https://github.com/bitinn/node-fetch](https://github.com/bitinn/node-fetch)                                                                   |
 | `normalize-url`                         | `3.3.0`    | Sindre Sorhus       | [https://github.com/sindresorhus/normalize-url](https://github.com/sindresorhus/normalize-url)                                                 |
 | `on-finished`                           | `2.3.0`    |                     | [https://github.com/jshttp/on-finished](https://github.com/jshttp/on-finished)                                                                 |
 | `onetime`                               | `5.1.0`    | Sindre Sorhus       | [https://github.com/sindresorhus/onetime](https://github.com/sindresorhus/onetime)                                                             |
