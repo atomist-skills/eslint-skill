@@ -16,7 +16,7 @@ This page details all runtime dependencies of `@atomist/eslint-skill`.
 | [GPL-3.0](#gpl-30)            | 1     |
 | [ISC](#isc)                   | 32    |
 | [MIT AND Zlib](#mit-and-zlib) | 1     |
-| [MIT](#mit)                   | 207   |
+| [MIT](#mit)                   | 208   |
 
 #### Apache-2.0
 
@@ -25,7 +25,7 @@ Apache License 2.0 - [http://www.apache.org/licenses/LICENSE-2.0](http://www.apa
 | Name                                  | Version                       | Publisher             | Repository                                                                                                                       |
 | ------------------------------------- | ----------------------------- | --------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
 | `@atomist/skill-logging`              | `0.1.1-9`                     | Atomist               | [https://github.com/atomist-skills/skill-logging](https://github.com/atomist-skills/skill-logging)                               |
-| `@atomist/skill`                      | `0.1.1-87`                    | Atomist               | [https://github.com/atomist-skills/skill](https://github.com/atomist-skills/skill)                                               |
+| `@atomist/skill`                      | `0.1.1-92`                    | Atomist               | [https://github.com/atomist-skills/skill](https://github.com/atomist-skills/skill)                                               |
 | `@atomist/slack-messages`             | `1.2.0-master.20200806132057` | Atomist               | [https://github.com/atomist/slack-messages](https://github.com/atomist/slack-messages)                                           |
 | `@google-cloud/common`                | `2.4.0`                       | Google Inc.           | [https://github.com/googleapis/nodejs-common](https://github.com/googleapis/nodejs-common)                                       |
 | `@google-cloud/common`                | `3.3.3`                       | Google Inc.           | [https://github.com/googleapis/nodejs-common](https://github.com/googleapis/nodejs-common)                                       |
@@ -35,7 +35,7 @@ Apache License 2.0 - [http://www.apache.org/licenses/LICENSE-2.0](http://www.apa
 | `@google-cloud/projectify`            | `1.0.4`                       | Google Inc.           | [https://github.com/googleapis/nodejs-projectify](https://github.com/googleapis/nodejs-projectify)                               |
 | `@google-cloud/projectify`            | `2.0.1`                       | Google Inc.           | [https://github.com/googleapis/nodejs-projectify](https://github.com/googleapis/nodejs-projectify)                               |
 | `@google-cloud/promisify`             | `1.0.4`                       | Google Inc.           | [https://github.com/googleapis/nodejs-promisify](https://github.com/googleapis/nodejs-promisify)                                 |
-| `@google-cloud/promisify`             | `2.0.2`                       | Google Inc.           | [https://github.com/googleapis/nodejs-promisify](https://github.com/googleapis/nodejs-promisify)                                 |
+| `@google-cloud/promisify`             | `2.0.3`                       | Google Inc.           | [https://github.com/googleapis/nodejs-promisify](https://github.com/googleapis/nodejs-promisify)                                 |
 | `@google-cloud/pubsub`                | `2.5.0`                       | Google Inc.           | [https://github.com/googleapis/nodejs-pubsub](https://github.com/googleapis/nodejs-pubsub)                                       |
 | `@google-cloud/storage`               | `5.3.0`                       | Google Inc.           | [https://github.com/googleapis/nodejs-storage](https://github.com/googleapis/nodejs-storage)                                     |
 | `@grpc/grpc-js`                       | `1.1.5`                       | Google Inc.           | [https://github.com/grpc/grpc-node/tree/master/packages/grpc-js](https://github.com/grpc/grpc-node/tree/master/packages/grpc-js) |
@@ -58,7 +58,7 @@ Apache License 2.0 - [http://www.apache.org/licenses/LICENSE-2.0](http://www.apa
 | `gcp-metadata`                        | `4.1.4`                       | Stephen Sawchuk       | [https://github.com/googleapis/gcp-metadata](https://github.com/googleapis/gcp-metadata)                                         |
 | `google-auth-library`                 | `5.10.1`                      | Google Inc.           | [https://github.com/googleapis/google-auth-library-nodejs](https://github.com/googleapis/google-auth-library-nodejs)             |
 | `google-auth-library`                 | `6.0.6`                       | Google Inc.           | [https://github.com/googleapis/google-auth-library-nodejs](https://github.com/googleapis/google-auth-library-nodejs)             |
-| `google-gax`                          | `2.7.0`                       | Google API Authors    | [https://github.com/googleapis/gax-nodejs](https://github.com/googleapis/gax-nodejs)                                             |
+| `google-gax`                          | `2.8.0`                       | Google API Authors    | [https://github.com/googleapis/gax-nodejs](https://github.com/googleapis/gax-nodejs)                                             |
 | `hex2dec`                             | `1.1.2`                       |                       | [https://github.com/donmccurdy/hex2dec](https://github.com/donmccurdy/hex2dec)                                                   |
 | `long`                                | `4.0.0`                       | Daniel Wirtz          | [https://github.com/dcodeIO/long.js](https://github.com/dcodeIO/long.js)                                                         |
 | `teeny-request`                       | `6.0.3`                       | fhinkel               | [https://github.com/googleapis/teeny-request](https://github.com/googleapis/teeny-request)                                       |
@@ -178,14 +178,14 @@ MIT License - [https://opensource.org/licenses/MIT](https://opensource.org/licen
 | `@octokit/core`                         | `3.1.2`    |                     | [https://github.com/octokit/core.js](https://github.com/octokit/core.js)                                                                       |
 | `@octokit/endpoint`                     | `6.0.5`    |                     | [https://github.com/octokit/endpoint.js](https://github.com/octokit/endpoint.js)                                                               |
 | `@octokit/graphql`                      | `4.5.4`    |                     | [https://github.com/octokit/graphql.js](https://github.com/octokit/graphql.js)                                                                 |
-| `@octokit/plugin-paginate-rest`         | `2.3.1`    |                     | [https://github.com/octokit/plugin-paginate-rest.js](https://github.com/octokit/plugin-paginate-rest.js)                                       |
+| `@octokit/plugin-paginate-rest`         | `2.3.2`    |                     | [https://github.com/octokit/plugin-paginate-rest.js](https://github.com/octokit/plugin-paginate-rest.js)                                       |
 | `@octokit/plugin-request-log`           | `1.0.0`    |                     | [https://github.com/octokit/plugin-request-log.js](https://github.com/octokit/plugin-request-log.js)                                           |
-| `@octokit/plugin-rest-endpoint-methods` | `4.1.3`    |                     | [https://github.com/octokit/plugin-rest-endpoint-methods.js](https://github.com/octokit/plugin-rest-endpoint-methods.js)                       |
+| `@octokit/plugin-rest-endpoint-methods` | `4.1.4`    |                     | [https://github.com/octokit/plugin-rest-endpoint-methods.js](https://github.com/octokit/plugin-rest-endpoint-methods.js)                       |
 | `@octokit/plugin-retry`                 | `3.0.3`    |                     | [https://github.com/octokit/plugin-retry.js](https://github.com/octokit/plugin-retry.js)                                                       |
 | `@octokit/plugin-throttling`            | `3.3.0`    |                     | [https://github.com/octokit/plugin-throttling.js](https://github.com/octokit/plugin-throttling.js)                                             |
 | `@octokit/request-error`                | `2.0.2`    |                     | [https://github.com/octokit/request-error.js](https://github.com/octokit/request-error.js)                                                     |
 | `@octokit/request`                      | `5.4.7`    |                     | [https://github.com/octokit/request.js](https://github.com/octokit/request.js)                                                                 |
-| `@octokit/rest`                         | `18.0.4`   |                     | [https://github.com/octokit/rest.js](https://github.com/octokit/rest.js)                                                                       |
+| `@octokit/rest`                         | `18.0.5`   |                     | [https://github.com/octokit/rest.js](https://github.com/octokit/rest.js)                                                                       |
 | `@octokit/types`                        | `5.4.1`    |                     | [https://github.com/octokit/types.ts](https://github.com/octokit/types.ts)                                                                     |
 | `@tootallnate/once`                     | `1.1.2`    | Nathan Rajlich      | [https://github.com/TooTallNate/once](https://github.com/TooTallNate/once)                                                                     |
 | `@types/color-name`                     | `1.1.1`    |                     | [https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)                                       |
@@ -259,7 +259,7 @@ MIT License - [https://opensource.org/licenses/MIT](https://opensource.org/licen
 | `fs-extra`                              | `9.0.1`    | JP Richardson       | [https://github.com/jprichardson/node-fs-extra](https://github.com/jprichardson/node-fs-extra)                                                 |
 | `gcs-resumable-upload`                  | `3.1.1`    | Stephen Sawchuk     | [https://github.com/googleapis/gcs-resumable-upload](https://github.com/googleapis/gcs-resumable-upload)                                       |
 | `git-up`                                | `4.0.2`    | Ionică Bizău        | [https://github.com/IonicaBizau/git-up](https://github.com/IonicaBizau/git-up)                                                                 |
-| `git-url-parse`                         | `11.1.3`   | Ionică Bizău        | [https://github.com/IonicaBizau/git-url-parse](https://github.com/IonicaBizau/git-url-parse)                                                   |
+| `git-url-parse`                         | `11.2.0`   | Ionică Bizău        | [https://github.com/IonicaBizau/git-url-parse](https://github.com/IonicaBizau/git-url-parse)                                                   |
 | `glob-gitignore`                        | `1.0.14`   | kaelzhang           | [https://github.com/kaelzhang/node-glob-gitignore](https://github.com/kaelzhang/node-glob-gitignore)                                           |
 | `google-p12-pem`                        | `2.0.4`    | Ryan Seys           | [https://github.com/google/google-p12-pem](https://github.com/google/google-p12-pem)                                                           |
 | `google-p12-pem`                        | `3.0.3`    | Ryan Seys           | [https://github.com/google/google-p12-pem](https://github.com/google/google-p12-pem)                                                           |
@@ -333,6 +333,7 @@ MIT License - [https://opensource.org/licenses/MIT](https://opensource.org/licen
 | `path-is-absolute`                      | `1.0.1`    | Sindre Sorhus       | [https://github.com/sindresorhus/path-is-absolute](https://github.com/sindresorhus/path-is-absolute)                                           |
 | `path-key`                              | `3.1.1`    | Sindre Sorhus       | [https://github.com/sindresorhus/path-key](https://github.com/sindresorhus/path-key)                                                           |
 | `picomatch`                             | `2.2.2`    | Jon Schlinkert      | [https://github.com/micromatch/picomatch](https://github.com/micromatch/picomatch)                                                             |
+| `prettier`                              | `2.1.1`    | James Long          | [https://github.com/prettier/prettier](https://github.com/prettier/prettier)                                                                   |
 | `process-nextick-args`                  | `2.0.1`    |                     | [https://github.com/calvinmetcalf/process-nextick-args](https://github.com/calvinmetcalf/process-nextick-args)                                 |
 | `protocols`                             | `1.4.8`    | Ionică Bizău        | [https://github.com/IonicaBizau/protocols](https://github.com/IonicaBizau/protocols)                                                           |
 | `pump`                                  | `3.0.0`    | Mathias Buus Madsen | [https://github.com/mafintosh/pump](https://github.com/mafintosh/pump)                                                                         |
