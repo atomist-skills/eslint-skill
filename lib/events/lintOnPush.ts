@@ -234,7 +234,7 @@ const RunEslintStep: LintStep = {
 			[
 				...args,
 				"--format",
-				path.join(__dirname, "..", "lib", "util", "formatter.js"),
+				path.join(process.cwd(), "formatter.js"),
 				"--no-color",
 			],
 			{
