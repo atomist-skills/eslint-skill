@@ -43,4 +43,3 @@ Atomist runs the linting for you, so there's no need to set up an environment. I
 # Just turn it on — no need to run anything yourself
 
 ![Enable ESLint](docs/images/eslint-info-config.png)
-
