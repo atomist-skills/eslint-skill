@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist-skills/eslint-skill/compare/1.0.7...HEAD)
 
+### Added
+
+-   Send eslint output to the skill log. [#68](https://github.com/atomist-skills/eslint-skill/issues/68)
+
 ### Changed
 
 -   Remove node_modules from default ignore. [7f90e90](https://github.com/atomist-skills/eslint-skill/commit/7f90e90cc29801268acf207c86eb4f2c03d05f0d)
