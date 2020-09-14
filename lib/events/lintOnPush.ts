@@ -190,7 +190,15 @@ const RunEslintStep: LintStep = {
 		const ignoreFile = params.project.path(
 			`.eslintignore-${push.after.sha.slice(0, 7)}`,
 		);
-		const filesToDelete = [reportFile];
+		const formatterFile = params.project.path(
+			`.eslintformatter-${push.after.sha.slice(0, 7)}`,
+		);
+		await fs.copyFile(
+			path.join(process.cwd(), "formatter.js"),
+			formatterFile,
+		);
+
+		const filesToDelete = [reportFile, formatterFile];
 
 		cfg.ext?.forEach(e => args.push("--ext", e));
 		cfg.args?.forEach(a => args.push(a));
@@ -231,12 +239,7 @@ const RunEslintStep: LintStep = {
 		// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 		const result = await params.project.spawn(
 			cmd,
-			[
-				...args,
-				"--format",
-				path.join(process.cwd(), "formatter.js"),
-				"--no-color",
-			],
+			[...args, "--format", formatterFile, "--no-color"],
 			{
 				log: { write: msg => lines.push(msg) },
 				env: {
