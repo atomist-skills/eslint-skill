@@ -1,7 +1,6 @@
 
 Fix problems in your JavaScript and TypeScript code, get pull requests
 
-
 ---
 
 # Find Problems
