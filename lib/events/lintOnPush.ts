@@ -23,11 +23,12 @@ import {
 	repository,
 	runSteps,
 	secret,
-	Step,
 	status,
+	Step,
 } from "@atomist/skill";
 import { Severity } from "@atomist/skill-logging";
 import * as fs from "fs-extra";
+import * as path from "path";
 import {
 	DefaultLintConfiguration,
 	LintConfiguration,
@@ -192,8 +193,6 @@ const RunEslintStep: LintStep = {
 		const filesToDelete = [reportFile];
 
 		cfg.ext?.forEach(e => args.push("--ext", e));
-		args.push("--format", "json");
-		args.push("--output-file", reportFile);
 		cfg.args?.forEach(a => args.push(a));
 
 		// Add .eslintignore if missing
@@ -230,9 +229,23 @@ const RunEslintStep: LintStep = {
 		await ctx.audit.log(`Running ESLint with: $ eslint ${argsString}`);
 
 		// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-		const result = await params.project.spawn(cmd, args, {
-			log: { write: msg => lines.push(msg) },
-		});
+		const result = await params.project.spawn(
+			cmd,
+			[
+				...args,
+				"--format",
+				path.join(__dirname, "..", "util", "formatter.js"),
+				"--no-color",
+			],
+			{
+				log: { write: msg => lines.push(msg) },
+				env: {
+					...process.env,
+					ESLINT_REPORT_FILE: reportFile,
+				},
+			},
+		);
+		await ctx.audit.log(lines.join("\n"));
 
 		const violations: Array<{
 			message: string;
