@@ -129,7 +129,7 @@ const SetupStep: UpdateStep = {
 
 const NpmInstallStep: UpdateStep = {
 	name: "npm install",
-	runWhen: async (ctx, params) => {
+	runWhen: async ctx => {
 		return ctx.configuration?.[0]?.parameters?.modules?.length > 0;
 	},
 	run: async (ctx, params) => {
@@ -192,7 +192,7 @@ const ConfigureEslintStep: UpdateStep = {
 
 const ConfigureHooksStep: UpdateStep = {
 	name: "configure hooks",
-	runWhen: async (ctx, params) => {
+	runWhen: async ctx => {
 		return (
 			ctx.configuration?.[0]?.parameters?.configure === "eslint_and_hook"
 		);
