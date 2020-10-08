@@ -127,25 +127,44 @@ const NpmInstallStep: LintStep = {
 	name: "npm install",
 	run: async (ctx, params) => {
 		const opts = { env: { ...process.env, NODE_ENV: "development" } };
+		let result;
 		if (await fs.pathExists(params.project.path("package-lock.json"))) {
-			await params.project.spawn("npm", ["ci", ...NpmInstallArgs], opts);
+			result = await params.project.spawn(
+				"npm",
+				["ci", ...NpmInstallArgs],
+				opts,
+			);
 		} else {
-			await params.project.spawn(
+			result = await params.project.spawn(
 				"npm",
 				["install", ...NpmInstallArgs],
 				opts,
 			);
 		}
+		if (result.status !== 0) {
+			return status.failure("`npm install` failed");
+		}
 
 		const cfg = ctx.configuration[0].parameters;
 		if (cfg.modules?.length > 0) {
 			await ctx.audit.log("Installing configured npm packages");
-			await params.project.spawn(
+			result = await params.project.spawn(
 				"npm",
 				["install", ...cfg.modules, ...NpmDevInstallArgs],
 				opts,
 			);
-			await params.project.spawn("git", ["reset", "--hard"], opts);
+			if (result.status !== 0) {
+				return status.failure("`npm install` failed");
+			}
+
+			result = await params.project.spawn(
+				"git",
+				["reset", "--hard"],
+				opts,
+			);
+			if (result.status !== 0) {
+				return status.failure("`git reset --hard` failed");
+			}
 		}
 		return status.success();
 	},

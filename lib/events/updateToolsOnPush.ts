@@ -144,11 +144,14 @@ const NpmInstallStep: UpdateStep = {
 		);
 		if (modules.length > 0) {
 			await ctx.audit.log("Installing configured npm packages");
-			await params.project.spawn(
+			const result = await params.project.spawn(
 				"npm",
 				["install", ...modules, ...NpmDevInstallArgs],
 				opts,
 			);
+			if (result.status !== 0) {
+				return status.failure("`npm install` failed");
+			}
 		}
 
 		return status.success();
@@ -219,11 +222,14 @@ const ConfigureHooksStep: UpdateStep = {
 			modules.push("lint-staged");
 		}
 		if (modules.length > 0) {
-			await params.project.spawn(
+			const result = await params.project.spawn(
 				"npm",
 				["install", ...modules, ...NpmDevInstallArgs],
 				opts,
 			);
+			if (result.status !== 0) {
+				return status.failure("`npm install` failed");
+			}
 		}
 
 		pj = await fs.readJson(params.project.path("package.json"));
