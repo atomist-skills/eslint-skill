@@ -92,12 +92,10 @@ const SetupStep: LintStep = {
 				.abort();
 		}
 
-		const includeGlobs = (
-			ctx.configuration?.[0]?.parameters?.ext || [".js"]
-		)
+		const includeGlobs = (ctx.configuration?.parameters?.ext || [".js"])
 			.map(e => (!e.startsWith(".") ? `.${e}` : e))
 			.map(e => `**/*${e}`);
-		const ignores = ctx.configuration?.[0]?.parameters?.ignores || [];
+		const ignores = ctx.configuration?.parameters?.ignores || [];
 		const matchingFiles = await project.globFiles(
 			params.project,
 			includeGlobs,
@@ -145,7 +143,7 @@ const NpmInstallStep: LintStep = {
 			return status.failure("`npm install` failed");
 		}
 
-		const cfg = ctx.configuration[0].parameters;
+		const cfg = ctx.configuration?.parameters;
 		if (cfg.modules?.length > 0) {
 			await ctx.audit.log("Installing configured npm packages");
 			result = await params.project.spawn(
@@ -196,7 +194,7 @@ const RunEslintStep: LintStep = {
 		const repo = push.repo;
 		const cfg: LintConfiguration = {
 			...DefaultLintConfiguration,
-			...ctx.configuration[0].parameters,
+			...(ctx.configuration?.parameters || {}),
 		};
 		const cmd = params.project.path("node_modules", ".bin", "eslint");
 		const args: string[] = [];
@@ -383,7 +381,7 @@ ${lines.join("\n")}
 const PushStep: LintStep = {
 	name: "push",
 	runWhen: async (ctx, params) => {
-		const pushCfg = ctx.configuration[0]?.parameters?.push;
+		const pushCfg = ctx.configuration?.parameters?.push;
 		return (
 			!!pushCfg &&
 			pushCfg !== "none" &&
@@ -393,7 +391,7 @@ const PushStep: LintStep = {
 	run: async (ctx, params) => {
 		const cfg: LintConfiguration = {
 			...DefaultLintConfiguration,
-			...ctx.configuration[0].parameters,
+			...(ctx.configuration?.parameters || {}),
 		};
 		const pushCfg = cfg.push;
 		const push = ctx.data.Push[0];
