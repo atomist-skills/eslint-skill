@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist-skills/eslint-skill/compare/1.0.8...HEAD)
 
+### Fixed
+
+-   Always set commit check status. [#87](https://github.com/atomist-skills/eslint-skill/issues/87)
+
 ## [1.0.8](https://github.com/atomist-skills/eslint-skill/compare/1.0.7...1.0.8) - 2020-09-15
 
 ### Added
