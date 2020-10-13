@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist-skills/eslint-skill/compare/1.0.8...HEAD)
 
+### Added
+
+-   Preserve spacing in package.json when updating dependencies. [#99](https://github.com/atomist-skills/eslint-skill/issues/99)
+
 ### Fixed
 
 -   Always set commit check status. [#87](https://github.com/atomist-skills/eslint-skill/issues/87)
