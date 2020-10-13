@@ -37,6 +37,7 @@ import {
 	UpdateToolsOnPushSubscription,
 } from "../typings/types";
 import * as _ from "lodash";
+import * as detectIndent from "detect-indent";
 
 interface UpdateParameters {
 	project: project.Project;
@@ -202,7 +203,7 @@ const ConfigureHooksStep: UpdateStep = {
 		const cfg = ctx.configuration?.parameters;
 		const opts = { env: { ...process.env, NODE_ENV: "development" } };
 
-		let pj = await fs.readJson(params.project.path("package.json"));
+		const pj = await fs.readJson(params.project.path("package.json"));
 
 		const modules = [];
 		if (!pj.devDependencies?.eslint && !pj.dependencies?.eslint) {
@@ -228,48 +229,7 @@ const ConfigureHooksStep: UpdateStep = {
 			}
 		}
 
-		pj = await fs.readJson(params.project.path("package.json"));
-
-		// Add npm script to run eslint
-		const script = `atm:lint:eslint`;
-
-		const args = ["--fix"];
-		cfg.args?.forEach(a => args.push(a));
-		_.set(pj, `scripts.${script}`, `eslint ${_.uniq(args)}`);
-
-		// Add husky configuration
-		if (!pj.husky?.["hooks"]?.["pre-commit"]) {
-			_.set(pj, "husky.hooks.pre-commit", "lint-staged");
-		} else if (!pj.husky.hooks["pre-commit"].includes("lint-staged")) {
-			pj.husky.hooks[
-				"pre-commit"
-			] = `${pj.husky["pre-commit"]} && lint-staged`;
-		}
-
-		// Add lint-staged configuration
-		let globs = (ctx.configuration?.parameters?.ext || [".js"])
-			.map(e => (!e.startsWith(".") ? `.${e}` : e))
-			.map(e => `**/*${e}`);
-		if (pj["lint-staged"]) {
-			// First attempt to delete the previous globs
-			for (const g in pj["lint-staged"]) {
-				if (pj["lint-staged"][g] === `npm run ${script}`) {
-					if (globs.includes(g)) {
-						globs = globs.filter(glob => g !== glob);
-					} else {
-						delete pj["lint-staged"][g];
-					}
-				}
-			}
-		} else {
-			pj["lint-staged"] = {};
-		}
-		// Now install the new version
-		globs.forEach(g => (pj["lint-staged"][g] = `npm run ${script}`));
-
-		await fs.writeJson(params.project.path("package.json"), pj, {
-			spaces: 2,
-		});
+		await updateLintConfiguration(params, cfg);
 
 		if ((await git.status(params.project)).isClean) {
 			return status.success(
@@ -390,4 +350,56 @@ export function moduleName(module: string): string {
 	} else {
 		return module;
 	}
+}
+
+export async function updateLintConfiguration(
+	params: UpdateParameters,
+	cfg: LintConfiguration,
+): Promise<void> {
+	const pjContent = (
+		await fs.readFile(params.project.path("package.json"))
+	).toString();
+	const pj = JSON.parse(pjContent);
+
+	// Add npm script to run eslint
+	const script = `atm:lint:eslint`;
+
+	const args = ["--fix"];
+	cfg.args?.forEach(a => args.push(a));
+	_.set(pj, `scripts.${script}`, `eslint ${_.uniq(args)}`);
+
+	// Add husky configuration
+	if (!pj.husky?.["hooks"]?.["pre-commit"]) {
+		_.set(pj, "husky.hooks.pre-commit", "lint-staged");
+	} else if (!pj.husky.hooks["pre-commit"].includes("lint-staged")) {
+		pj.husky.hooks[
+			"pre-commit"
+		] = `${pj.husky["pre-commit"]} && lint-staged`;
+	}
+
+	// Add lint-staged configuration
+	let globs = (cfg?.ext || [".js"])
+		.map(e => (!e.startsWith(".") ? `.${e}` : e))
+		.map(e => `**/*${e}`);
+	if (pj["lint-staged"]) {
+		// First attempt to delete the previous globs
+		for (const g in pj["lint-staged"]) {
+			if (pj["lint-staged"][g] === `npm run ${script}`) {
+				if (globs.includes(g)) {
+					globs = globs.filter(glob => g !== glob);
+				} else {
+					delete pj["lint-staged"][g];
+				}
+			}
+		}
+	} else {
+		pj["lint-staged"] = {};
+	}
+	// Now install the new version
+	globs.forEach(g => (pj["lint-staged"][g] = `npm run ${script}`));
+
+	const spaces = detectIndent(pjContent).indent;
+	await fs.writeJson(params.project.path("package.json"), pj, {
+		spaces,
+	});
 }
