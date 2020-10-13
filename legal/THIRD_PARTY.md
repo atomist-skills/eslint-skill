@@ -19,7 +19,7 @@ This page details all runtime dependencies of `@atomist/eslint-skill`.
 | [GPL-3.0](#gpl-30)              | 1     |
 | [ISC](#isc)                     | 47    |
 | [MIT AND Zlib](#mit-and-zlib)   | 1     |
-| [MIT](#mit)                     | 566   |
+| [MIT](#mit)                     | 564   |
 | [Public Domain](#public-domain) | 1     |
 | [Unlicense](#unlicense)         | 1     |
 
@@ -351,7 +351,6 @@ MIT License - [https://opensource.org/licenses/MIT](https://opensource.org/licen
 | `@types/cross-spawn`                                 | `6.0.2`        |                      | [https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)                                                                                             |
 | `@types/duplexify`                                   | `3.6.0`        |                      | [https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)                                                                                             |
 | `@types/flat`                                        | `5.0.1`        |                      | [https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)                                                                                             |
-| `@types/fs-extra`                                    | `9.0.2`        |                      | [https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)                                                                                             |
 | `@types/git-url-parse`                               | `9.0.0`        |                      | [https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)                                                                                             |
 | `@types/http-proxy-agent`                            | `2.0.2`        |                      | [https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)                                                                                             |
 | `@types/js-yaml`                                     | `3.12.5`       |                      | [https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)                                                                                             |
@@ -369,7 +368,6 @@ MIT License - [https://opensource.org/licenses/MIT](https://opensource.org/licen
 | `@types/node`                                        | `12.12.67`     |                      | [https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)                                                                                             |
 | `@types/node`                                        | `13.13.12`     |                      | [https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)                                                                                             |
 | `@types/parse-json`                                  | `4.0.0`        |                      | [https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)                                                                                             |
-| `@types/promise-retry`                               | `1.1.3`        |                      | [https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)                                                                                             |
 | `@types/retry`                                       | `0.12.0`       |                      | [https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)                                                                                             |
 | `@types/semver`                                      | `7.3.4`        |                      | [https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)                                                                                             |
 | `@types/stack-trace`                                 | `0.0.29`       |                      | [https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)                                                                                             |
