@@ -286,10 +286,7 @@ const ConfigureHooksStep: UpdateStep = {
 const PushStep: UpdateStep = {
 	name: "push",
 	runWhen: async (ctx, params) => {
-		const pushCfg = ctx.configuration?.parameters?.push;
 		return (
-			!!pushCfg &&
-			pushCfg !== "none" &&
 			!(await git.status(params.project)).isClean &&
 			!(await onlyPackageLockChanged(params.project))
 		);
