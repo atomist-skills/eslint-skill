@@ -30,7 +30,7 @@ export const Skill = skill<LintConfiguration & { repos: any }>({
 	namespace: "atomist",
 	displayName: "ESLint",
 	author: "Atomist",
-	categories: [Category.CodeQuality],
+	categories: [Category.CodeMaintenance],
 	license: "Apache-2.0",
 
 	runtime: {
