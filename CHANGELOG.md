@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist-skills/eslint-skill/compare/1.2.0...HEAD)
 
+### Fixed
+
+-   Fix clean package script. [9db2f04](https://github.com/atomist-skills/eslint-skill/commit/9db2f04c6afcd23545dbfdb420672bec1c447de3)
+
 ## [1.2.0](https://github.com/atomist-skills/eslint-skill/compare/1.1.0...1.2.0) - 2020-10-16
 
 ### Changed
