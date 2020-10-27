@@ -1,7 +1,7 @@
 {
   "main": "node_modules/@atomist/skill/lib/function.js",
   "dependencies": {
-    "@atomist/skill": "^0.4.0",
+    "@atomist/skill": "^0.4.1",
     "detect-indent": "^6.0.0",
     "fs-extra": "^9.0.1",
     "lodash": "^4.17.20"
