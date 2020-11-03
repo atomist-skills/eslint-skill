@@ -12,7 +12,7 @@
     "@graphql-codegen/typescript": "^1.17.11",
     "@graphql-codegen/typescript-operations": "^1.17.8",
     "@types/detect-indent": "^6.0.0",
-    "@types/fs-extra": "^9.0.2",
+    "@types/fs-extra": "^9.0.3",
     "@types/lodash": "^4.14.164",
     "@types/mocha": "^8.0.3",
     "@types/power-assert": "^1.5.3",
