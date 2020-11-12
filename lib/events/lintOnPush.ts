@@ -25,8 +25,8 @@ import {
 	secret,
 	status,
 	Step,
+	log,
 } from "@atomist/skill";
-import { Severity } from "@atomist/skill-logging";
 import * as fs from "fs-extra";
 import * as path from "path";
 import {
@@ -352,9 +352,9 @@ const RunEslintStep: LintStep = {
 		} else if (result.status === 2) {
 			await ctx.audit.log(
 				`Running ESLint failed with configuration or internal error:`,
-				Severity.Error,
+				log.Severity.Error,
 			);
-			await ctx.audit.log(lines.join("\n"), Severity.Error);
+			await ctx.audit.log(lines.join("\n"), log.Severity.Error);
 			await params.check.update({
 				conclusion: "action_required",
 				body: `Running ESLint failed with a configuration error.
