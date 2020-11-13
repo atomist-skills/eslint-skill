@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist-skills/eslint-skill/compare/1.3.0...HEAD)
 
+### Removed
+
+-   Remove unused chat integration. [d6b24a6](https://github.com/atomist-skills/eslint-skill/commit/d6b24a6f09984dcc9694b94af1a0104c688d9427)
+
 ## [1.3.0](https://github.com/atomist-skills/eslint-skill/compare/1.2.0...1.3.0) - 2020-10-16
 
 ### Changed
