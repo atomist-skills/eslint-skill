@@ -29,6 +29,8 @@ export const Skill = skill<LintConfiguration & { repos: any }>({
 	name: "eslint-skill",
 	namespace: "atomist",
 	displayName: "ESLint",
+	description:
+		"Fix problems in your JavaScript and TypeScript code, get pull requests",
 	author: "Atomist",
 	categories: [Category.CodeMaintenance],
 	license: "Apache-2.0",
@@ -40,7 +42,6 @@ export const Skill = skill<LintConfiguration & { repos: any }>({
 
 	resourceProviders: {
 		github: resourceProvider.gitHub({ minRequired: 1 }),
-		slack: resourceProvider.chat({ minRequired: 0 }),
 	},
 
 	parameters: {
