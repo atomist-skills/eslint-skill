@@ -11,7 +11,7 @@
   "homepage": "https://github.com/atomist-skills/eslint-skill#readme",
   "license": "Apache-2.0",
   "dependencies": {
-    "@atomist/skill": "^0.5.0",
+    "@atomist/skill": "^0.5.1",
     "detect-indent": "^6.0.0",
     "fs-extra": "^9.0.1",
     "lodash": "^4.17.20"
