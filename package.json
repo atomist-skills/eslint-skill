@@ -1,15 +1,53 @@
 {
   "name": "@atomist/eslint-skill",
+  "homepage": "https://github.com/atomist-skills/eslint-skill",
+  "license": "Apache-2.0",
   "author": {
-    "name": "Atomist",
-    "email": "oss@atomist.com"
+    "name": "Atomist, Inc.",
+    "email": "oss@atomist.com",
+    "url": "https://atomist.com"
+  },
+  "main": "node_modules/@atomist/skill/lib/function.js",
+  "directories": {
+    "test": "test"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/atomist-skills/eslint-skill.git"
   },
-  "homepage": "https://github.com/atomist-skills/eslint-skill#readme",
-  "license": "Apache-2.0",
+  "scripts": {
+    "atm:lint:eslint": "eslint --fix",
+    "atm:lint:prettier": "prettier --write",
+    "autotest": "supervisor --watch index.ts,lib,test --extensions ts --no-restart-on exit --quiet --exec npm -- test",
+    "build": "run-s clean compile test lint doc",
+    "clean": "run-p clean:compile clean:test clean:doc clean:run",
+    "clean:compile": "rimraf git-info.json \"*.{d.ts,js}{,.map}\" \"{lib,test}/**/!(formatter).{d.ts,js}{,.map}\" lib/typings/types.ts",
+    "clean:dist": "run-s clean clean:npm",
+    "clean:doc": "rimraf doc",
+    "clean:npm": "rimraf node_modules",
+    "clean:run": "rimraf *-v8.log profile.txt log",
+    "clean:test": "rimraf .nyc_output coverage",
+    "compile": "run-s gql:gen compile:ts copy:formatter",
+    "compile:ts": "tsc --project .",
+    "copy:formatter": "cp ./lib/util/formatter.js .",
+    "doc": "typedoc --mode modules --excludeExternals --ignoreCompilerErrors --exclude \"**/*.d.ts\" --out doc index.ts lib",
+    "gql:gen": "atm-skill gql-generate",
+    "lint": "run-p lint:eslint lint:prettier",
+    "lint:eslint": "eslint --ext .ts .",
+    "lint:eslint:fix": "npm run lint:eslint -- --fix",
+    "lint:fix": "run-p lint:eslint:fix lint:prettier:fix",
+    "lint:prettier": "prettier --list-different \"**/*.{graphql,json,markdown,md,yaml,yml}\"",
+    "lint:prettier:fix": "prettier --write \"**/*.{graphql,json,markdown,md,yaml,yml}\"",
+    "skill": "run-s compile test skill:generate skill:bundle skill:package",
+    "skill:bundle": "atm-skill bundle",
+    "skill:clean": "atm-skill clean",
+    "skill:generate": "atm-skill generate",
+    "skill:package": "atm-skill package",
+    "skill:register": "atm-skill register",
+    "start": "functions-framework --target=entryPoint --signature-type=event",
+    "test": "echo no tests",
+    "test:one": "echo no tests"
+  },
   "dependencies": {
     "@atomist/skill": "^0.5.1",
     "detect-indent": "^6.0.0",
@@ -34,43 +72,6 @@
     "supervisor": "^0.12.0",
     "typedoc": "^0.19.2",
     "typescript": "^4.0.5"
-  },
-  "directories": {
-    "test": "test"
-  },
-  "main": "node_modules/@atomist/skill/lib/function.js",
-  "scripts": {
-    "autotest": "supervisor --watch index.ts,lib,test --extensions ts --no-restart-on exit --quiet --exec npm -- test",
-    "build": "run-s clean compile test lint doc",
-    "clean": "run-p clean:compile clean:test clean:doc clean:run",
-    "clean:compile": "rimraf git-info.json \"*.{d.ts,js}{,.map}\" \"{lib,test}/**/!(formatter).{d.ts,js}{,.map}\" lib/typings/types.ts",
-    "clean:dist": "run-s clean clean:npm",
-    "clean:doc": "rimraf doc",
-    "clean:npm": "rimraf node_modules",
-    "clean:run": "rimraf *-v8.log profile.txt log",
-    "clean:test": "rimraf .nyc_output coverage",
-    "compile": "run-s gql:gen compile:ts copy:formatter",
-    "compile:ts": "tsc --project .",
-    "copy:formatter": "cp ./lib/util/formatter.js .",
-    "doc": "typedoc --mode modules --excludeExternals --ignoreCompilerErrors --exclude \"**/*.d.ts\" --out doc index.ts lib",
-    "gql:gen": "atm-skill gql-generate",
-    "lint": "run-p lint:eslint lint:prettier",
-    "lint:eslint": "eslint --ext .ts .",
-    "lint:prettier": "prettier --list-different \"**/*.{graphql,json,markdown,md,yaml,yml}\"",
-    "lint:fix": "run-p lint:eslint:fix lint:prettier:fix",
-    "lint:eslint:fix": "npm run lint:eslint -- --fix",
-    "lint:prettier:fix": "prettier --write \"**/*.{graphql,json,markdown,md,yaml,yml}\"",
-    "start": "functions-framework --target=entryPoint --signature-type=event",
-    "test": "echo no tests",
-    "test:one": "echo no tests",
-    "skill": "run-s compile test skill:generate skill:bundle skill:package",
-    "skill:generate": "atm-skill generate",
-    "skill:clean": "atm-skill clean",
-    "skill:bundle": "atm-skill bundle",
-    "skill:package": "atm-skill package",
-    "skill:register": "atm-skill register",
-    "atm:lint:eslint": "eslint --fix",
-    "atm:lint:prettier": "prettier --write"
   },
   "husky": {
     "hooks": {
