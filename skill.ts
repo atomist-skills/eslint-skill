@@ -33,6 +33,8 @@ export const Skill = skill<LintConfiguration & { repos: any }>({
 		"Fix problems in your JavaScript and TypeScript code, get pull requests",
 	author: "Atomist",
 	categories: [Category.CodeMaintenance],
+	iconUrl:
+		"https://raw.githubusercontent.com/atomist-skills/eslint-skill/main/docs/images/icon.svg",
 	license: "Apache-2.0",
 
 	runtime: {
