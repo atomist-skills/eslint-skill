@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
+import * as stylish from "eslint/lib/cli-engine/formatters/stylish";
 import * as fs from "fs";
-import { stylish } from "eslint/lib/cli-engine/formatters/stylish";
 
 declare let module: any;
 module.exports = results => {
