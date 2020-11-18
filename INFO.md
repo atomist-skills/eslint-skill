@@ -21,10 +21,6 @@ which branches get linted.
 
 ![Fixes pull request](docs/images/eslint-info-fixes.png)
 
-# Get notifications in Slack or Microsoft Teams
-
-![Slack notifications](docs/images/eslint-info-slack.png)
-
 # Just turn it on — no need to run anything yourself
 
 ![Enable ESLint](docs/images/eslint-info-config.png)
