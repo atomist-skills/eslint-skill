@@ -14,10 +14,14 @@
  * limitations under the License.
  */
 
-const stylish = require("eslint/lib/cli-engine/formatters/stylish");
-const fs = require("fs");
+import * as fs from "fs";
+import { stylish } from "eslint/lib/cli-engine/formatters/stylish";
 
-module.exports = function(results) {
-    fs.writeFileSync(process.env.ESLINT_REPORT_FILE || "report.json", JSON.stringify(results, undefined, 2));
-    return stylish(results);
+declare let module: any;
+module.exports = results => {
+	fs.writeFileSync(
+		process.env.ESLINT_REPORT_FILE || "report.json",
+		JSON.stringify(results, undefined, 2),
+	);
+	return stylish(results);
 };
