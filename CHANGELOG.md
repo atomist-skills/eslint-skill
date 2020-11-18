@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 
 -   Fix clean package script. [e2728af](https://github.com/atomist-skills/eslint-skill/commit/e2728afe769553e7785169e666672f8f6ad09ca4)
+-   Fix compile package script. [c15e860](https://github.com/atomist-skills/eslint-skill/commit/c15e860644ae4a31f3e98e6561d786680540b28b)
 
 ## [1.5.0](https://github.com/atomist-skills/eslint-skill/compare/1.4.0...1.5.0) - 2020-11-16
 
