@@ -5,7 +5,6 @@
 tsconfig.json
 codegen.yml
 test/
-lib/
 legal/
 docs/
 skill/
