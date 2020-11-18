@@ -211,7 +211,7 @@ const RunEslintStep: LintStep = {
 			`.eslintformatter-${push.after.sha.slice(0, 7)}`,
 		);
 		await fs.copyFile(
-			path.join(process.cwd(), "formatter.js"),
+			path.join(process.cwd(), "lib", "util", "formatter.js"),
 			formatterFile,
 		);
 
