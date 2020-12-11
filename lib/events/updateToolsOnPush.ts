@@ -26,7 +26,10 @@ import {
 	status,
 	Step,
 } from "@atomist/skill";
+import * as detectIndent from "detect-indent";
 import * as fs from "fs-extra";
+import * as _ from "lodash";
+
 import {
 	DefaultLintConfiguration,
 	LintConfiguration,
@@ -36,8 +39,6 @@ import {
 	LintOnPushSubscription,
 	UpdateToolsOnPushSubscription,
 } from "../typings/types";
-import * as _ from "lodash";
-import * as detectIndent from "detect-indent";
 
 interface UpdateParameters {
 	project: project.Project;

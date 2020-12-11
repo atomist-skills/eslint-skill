@@ -23,6 +23,7 @@ import {
 	resourceProvider,
 	skill,
 } from "@atomist/skill";
+
 import { LintConfiguration } from "./lib/configuration";
 
 export const Skill = skill<LintConfiguration & { repos: any }>({
