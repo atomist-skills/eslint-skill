@@ -19,16 +19,17 @@ import {
 	EventHandler,
 	git,
 	github,
+	log,
 	project,
 	repository,
 	runSteps,
 	secret,
 	status,
 	Step,
-	log,
 } from "@atomist/skill";
 import * as fs from "fs-extra";
 import * as path from "path";
+
 import {
 	DefaultLintConfiguration,
 	LintConfiguration,
