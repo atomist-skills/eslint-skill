@@ -58,7 +58,7 @@
     "@types/detect-indent": "^6.0.0",
     "@types/fs-extra": "^9.0.8",
     "@types/lodash": "^4.14.168",
-    "@types/mocha": "^8.2.1",
+    "@types/mocha": "^8.2.2",
     "@typescript-eslint/eslint-plugin": "^4.18.0",
     "@typescript-eslint/parser": "^4.18.0",
     "eslint": "^7.22.0",
