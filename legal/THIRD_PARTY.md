@@ -201,7 +201,7 @@ ISC License - [https://www.isc.org/downloads/software-support-policy/isc-license
 | `which`                           | `2.0.2`  | Isaac Z. Schlueter | [https://github.com/isaacs/node-which](https://github.com/isaacs/node-which)                                                     |
 | `wrappy`                          | `1.0.2`  | Isaac Z. Schlueter | [https://github.com/npm/wrappy](https://github.com/npm/wrappy)                                                                   |
 | `write-file-atomic`               | `3.0.3`  | Rebecca Turner     | [https://github.com/npm/write-file-atomic](https://github.com/npm/write-file-atomic)                                             |
-| `y18n`                            | `4.0.0`  | Ben Coe            | [https://github.com/yargs/y18n](https://github.com/yargs/y18n)                                                                   |
+| `y18n`                            | `4.0.1`  | Ben Coe            | [https://github.com/yargs/y18n](https://github.com/yargs/y18n)                                                                   |
 | `y18n`                            | `5.0.5`  | Ben Coe            | [https://github.com/yargs/y18n](https://github.com/yargs/y18n)                                                                   |
 | `yallist`                         | `3.1.1`  | Isaac Z. Schlueter | [https://github.com/isaacs/yallist](https://github.com/isaacs/yallist)                                                           |
 | `yallist`                         | `4.0.0`  | Isaac Z. Schlueter | [https://github.com/isaacs/yallist](https://github.com/isaacs/yallist)                                                           |
