@@ -56,12 +56,12 @@
   "devDependencies": {
     "@google-cloud/functions-framework": "^1.7.1",
     "@types/detect-indent": "^6.0.0",
-    "@types/fs-extra": "^9.0.9",
+    "@types/fs-extra": "^9.0.11",
     "@types/lodash": "^4.14.168",
     "@types/mocha": "^8.2.2",
-    "@typescript-eslint/eslint-plugin": "^4.20.0",
-    "@typescript-eslint/parser": "^4.20.0",
-    "eslint": "^7.23.0",
+    "@typescript-eslint/eslint-plugin": "^4.22.0",
+    "@typescript-eslint/parser": "^4.22.0",
+    "eslint": "^7.24.0",
     "eslint-config-prettier": "^6.15.0",
     "eslint-plugin-prettier": "^3.3.1",
     "eslint-plugin-simple-import-sort": "^7.0.0",
@@ -73,8 +73,8 @@
     "prettier": "^2.2.1",
     "rimraf": "^3.0.2",
     "supervisor": "^0.12.0",
-    "typedoc": "^0.20.34",
-    "typescript": "^4.2.3"
+    "typedoc": "^0.20.35",
+    "typescript": "^4.2.4"
   },
   "husky": {
     "hooks": {
