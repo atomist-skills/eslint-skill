@@ -19,6 +19,7 @@ import {
 	EventHandler,
 	git,
 	github,
+	log,
 	project,
 	repository,
 	runSteps,
@@ -70,9 +71,7 @@ const SetupStep: UpdateStep = {
 				.abort();
 		}
 
-		await ctx.audit.log(
-			`Updating ESLint configuration on ${repo.owner}/${repo.name}`,
-		);
+		log.info(`Updating ESLint configuration on ${repo.owner}/${repo.name}`);
 
 		params.credential = await ctx.credential.resolve(
 			secret.gitHubAppToken({
@@ -92,7 +91,7 @@ const SetupStep: UpdateStep = {
 			}),
 			{ alwaysDeep: false, detachHead: false },
 		);
-		await ctx.audit.log(
+		log.info(
 			`Cloned repository ${repo.owner}/${
 				repo.name
 			} at sha ${push.after.sha.slice(0, 7)}`,
@@ -143,7 +142,7 @@ const NpmInstallStep: UpdateStep = {
 				!pj.devDependencies?.[moduleName(m)],
 		);
 		if (modules.length > 0) {
-			await ctx.audit.log("Installing configured npm packages");
+			log.info("Installing configured npm packages");
 			const result = await params.project.spawn(
 				"npm",
 				["install", ...modules, ...NpmDevInstallArgs],

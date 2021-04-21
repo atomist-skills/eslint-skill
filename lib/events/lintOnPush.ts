@@ -60,7 +60,7 @@ const SetupStep: LintStep = {
 			return status.success(`Ignore generated branch`).hidden().abort();
 		}
 
-		await ctx.audit.log(`Starting ESLint on ${repo.owner}/${repo.name}`);
+		log.info(`Starting ESLint on ${repo.owner}/${repo.name}`);
 
 		params.credential = await ctx.credential.resolve(
 			secret.gitHubAppToken({
@@ -80,7 +80,7 @@ const SetupStep: LintStep = {
 			}),
 			{ alwaysDeep: false, detachHead: false },
 		);
-		await ctx.audit.log(
+		log.info(
 			`Cloned repository ${repo.owner}/${
 				repo.name
 			} at sha ${push.after.sha.slice(0, 7)}`,
@@ -146,7 +146,7 @@ const NpmInstallStep: LintStep = {
 
 		const cfg = ctx.configuration?.parameters;
 		if (cfg.modules?.length > 0) {
-			await ctx.audit.log("Installing configured npm packages");
+			log.info("Installing configured npm packages");
 			result = await params.project.spawn(
 				"npm",
 				["install", ...cfg.modules, ...NpmDevInstallArgs],
@@ -252,7 +252,7 @@ const RunEslintStep: LintStep = {
 			.join(" ")
 			.split(`${params.project.path()}/`)
 			.join("");
-		await ctx.audit.log(`Running ESLint with: $ eslint ${argsString}`);
+		log.info(`Running ESLint with: $ eslint ${argsString}`);
 
 		// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 		const result = await params.project.spawn(
@@ -266,7 +266,7 @@ const RunEslintStep: LintStep = {
 				},
 			},
 		);
-		await ctx.audit.log(lines.join("\n"));
+		log.info(lines.join("\n"));
 
 		const violations: Array<{
 			message: string;
@@ -305,7 +305,7 @@ const RunEslintStep: LintStep = {
 		if (result.status === 0 && violations.length === 0) {
 			const clean = (await git.status(params.project)).isClean;
 			if (clean) {
-				await ctx.audit.log(`ESLint returned no errors or warnings`);
+				log.info(`ESLint returned no errors or warnings`);
 				await params.check.update({
 					conclusion: "success",
 					body: `Running \`eslint\` resulted in no warnings or errors.
@@ -316,7 +316,7 @@ const RunEslintStep: LintStep = {
 					`\`eslint\` returned no errors or warnings on [${repo.owner}/${repo.name}](${repo.url})`,
 				);
 			} else {
-				await ctx.audit.log(`ESLint fixed some errors or warnings`);
+				log.info(`ESLint fixed some errors or warnings`);
 				await params.check.update({
 					conclusion: "action_required",
 					body: `Running \`eslint\` fixed some errors and warnings.
@@ -351,11 +351,10 @@ const RunEslintStep: LintStep = {
 				`\`eslint\` raised [errors or warnings](${params.check.data.html_url}) on [${repo.owner}/${repo.name}](${repo.url})`,
 			);
 		} else if (result.status === 2) {
-			await ctx.audit.log(
+			log.error(
 				`Running ESLint failed with configuration or internal error:`,
-				log.Severity.Error,
 			);
-			await ctx.audit.log(lines.join("\n"), log.Severity.Error);
+			log.error(lines.join("\n"));
 			await params.check.update({
 				conclusion: "action_required",
 				body: `Running ESLint failed with a configuration error.
