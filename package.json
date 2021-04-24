@@ -1,6 +1,6 @@
 {
   "name": "@atomist/eslint-skill",
-  "homepage": "https://github.com/atomist-skills/eslint-skill",
+  "homepage": "https://github.com/atomist-skills/eslint-skill#readme",
   "license": "Apache-2.0",
   "author": {
     "name": "Atomist, Inc.",
@@ -55,7 +55,7 @@
     "lodash": "^4.17.21"
   },
   "devDependencies": {
-    "@atomist/npm-tools": "^0.1.1-master.0",
+    "@atomist/npm-tools": "^0.1.1-main.0",
     "@google-cloud/functions-framework": "^1.7.1",
     "@types/detect-indent": "^6.0.0",
     "@types/fs-extra": "^9.0.11",
