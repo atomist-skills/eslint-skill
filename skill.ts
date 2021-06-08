@@ -116,8 +116,7 @@ export const Skill = skill<LintConfiguration & { repos: any }>({
 				"Update repositories to use the skill's ESLint configuration",
 			options: [
 				{
-					text:
-						"Update ESLint config, ignore files and install Git commit hooks",
+					text: "Update ESLint config, ignore files and install Git commit hooks",
 					value: "eslint_and_hook",
 				},
 				{
