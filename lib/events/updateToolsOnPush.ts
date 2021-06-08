@@ -322,21 +322,19 @@ const ClosePrStep: UpdateStep = {
 	},
 };
 
-export const handler: EventHandler<
-	LintOnPushSubscription,
-	LintConfiguration
-> = async ctx =>
-	runSteps({
-		context: ctx,
-		steps: [
-			SetupStep,
-			NpmInstallStep,
-			ConfigureEslintStep,
-			ConfigureHooksStep,
-			ClosePrStep,
-			PushStep,
-		],
-	});
+export const handler: EventHandler<LintOnPushSubscription, LintConfiguration> =
+	async ctx =>
+		runSteps({
+			context: ctx,
+			steps: [
+				SetupStep,
+				NpmInstallStep,
+				ConfigureEslintStep,
+				ConfigureHooksStep,
+				ClosePrStep,
+				PushStep,
+			],
+		});
 
 async function onlyPackageLockChanged(p: project.Project): Promise<boolean> {
 	const files = await git.changedFiles(p);
