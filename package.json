@@ -68,7 +68,7 @@
     "eslint-plugin-deprecation": "^1.2.1",
     "eslint-plugin-prettier": "^3.4.0",
     "eslint-plugin-simple-import-sort": "^7.0.0",
-    "eslint-plugin-unused-imports": "^1.1.1",
+    "eslint-plugin-unused-imports": "^1.1.2",
     "espower-typescript": "^9.0.2",
     "husky": "^4.3.5",
     "lint-staged": "^10.5.4",
@@ -78,7 +78,7 @@
     "rimraf": "^3.0.2",
     "supervisor": "^0.12.0",
     "typedoc": "^0.20.37",
-    "typescript": "^4.3.4"
+    "typescript": "^4.3.5"
   },
   "husky": {
     "hooks": {
